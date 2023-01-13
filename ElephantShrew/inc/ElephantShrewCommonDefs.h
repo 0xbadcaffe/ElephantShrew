@@ -17,14 +17,16 @@ namespace ElephantShrew {
 /* Only one transmission method can be turned on */
 constexpr auto USB_TRANSMIT = true;
 constexpr auto UDP_TRANSMIT = false;
+
 /* Only one receive method can be turned on */
 constexpr auto FILE_RECEIVE = true;
 constexpr auto UDP_RECEIVE  = false;
+
 /*
- * ElephantShrew input date configuration
+ * ElephantShrew input data configuration
  */
-constexpr auto ElephantShrew_LINE_SIZE = 10;
-constexpr auto ElephantShrew_MAX_COUNTS = 1000;
+constexpr auto ELEPHENTSHREW_LINE_SIZE = 10;
+constexpr auto ELEPHENTSHREW_MAX_COUNTS = 1000;
 
 
 }
