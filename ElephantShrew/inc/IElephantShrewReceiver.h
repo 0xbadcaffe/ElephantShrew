@@ -13,7 +13,7 @@
 #include <iostream>
 #include "ElephantShrewCommonDefs.h"
 
-namespace elephantShrew {
+namespace ElephantShrew {
 
 class IElephantShrewReceiver {
 

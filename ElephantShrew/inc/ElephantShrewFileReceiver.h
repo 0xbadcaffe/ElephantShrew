@@ -11,7 +11,7 @@
 #include <fstream>
 #include "IElephantShrewFileReceiver.h"
 
-namespace elephantShrew {
+namespace ElephantShrew {
 
 	class ElephantShrewFileReceiver : public IElephantShrewFileReceiver {
 

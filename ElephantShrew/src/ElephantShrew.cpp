@@ -12,7 +12,7 @@
 #include "FileReceiver.h"
 #include "ElephantShrewProcessor.h"
 
-namespace elephantShrew {
+namespace ElephantShrew {
 
 std::shared_ptr<ElephantShrewOverseer> ElephantShrew::Init(){
 

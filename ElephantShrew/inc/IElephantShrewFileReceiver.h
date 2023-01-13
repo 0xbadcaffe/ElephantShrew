@@ -10,7 +10,7 @@
 
 #include "IElephantShrewReceiver.h"
 
-namespace elephantShrew {
+namespace ElephantShrew {
 
 
 class IElephantShrewFileReceiver : public IElephantShrewReceiver {

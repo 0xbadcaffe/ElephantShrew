@@ -10,7 +10,7 @@
 
 #include "ElephantShrewOverseer.h"
 
-namespace elephantShrew {
+namespace ElephantShrew {
 
 class IElephantShrew {
 
