@@ -2,7 +2,7 @@
  * IElephantShrewReceiver.h
  *
  *  Created on: 31 May 2022
- *      Author: misteroy
+ *      Author: Roy Cohen
  */
 
 #ifndef IELEPHENTSHREW_RECEIVER_H_

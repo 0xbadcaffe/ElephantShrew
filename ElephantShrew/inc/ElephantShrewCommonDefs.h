@@ -2,7 +2,7 @@
  * ElephantShrewCommonDefs.h
  *
  *  Created on: 3 Jun 2022
- *      Author: misteroy
+ *      Author: Roy Cohen
  */
 
 #ifndef ELEPHENTSHREW_COMMONDEFS_H_

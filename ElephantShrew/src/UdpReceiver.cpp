@@ -2,7 +2,7 @@
  * UdpReceiver.cpp
  *
  *  Created on: 1 Jun 2022
- *      Author: misteroy
+ *      Author: Roy Cohen
  */
 #include <memory>
 #include "UdpReceiver.h"

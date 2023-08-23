@@ -2,7 +2,7 @@
  * ElephantShrewProcessor.h
  *
  *  Created on: 1 Jun 2022
- *      Author: misteroy
+ *      Author: Roy Cohen
  */
 
 #ifndef ElephantShrewPROCESSOR_H_

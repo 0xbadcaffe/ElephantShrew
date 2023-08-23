@@ -2,7 +2,7 @@
  * FileReceiver.cpp
  *
  *  Created on: 31 May 2022
- *      Author: misteroy
+ *      Author: Roy Cohen
  */
 #include "FileReceiver.h"
 
