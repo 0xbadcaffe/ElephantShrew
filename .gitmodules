@@ -1,0 +1,3 @@
+[submodule "Hypodermic"]
+  path = Packages/Hypodermic
+  url = git@github.com:ybainier/Hypodermic.git
