@@ -1,5 +1,5 @@
 /*
- * IElephantShrew.h
+ * IElephantShrew.hpp
  *
  *  Created on: 31 May 2022
  *      Author: Roy Cohen
@@ -8,7 +8,7 @@
 #ifndef IELEPHENTSHREW_H_
 #define IELEPHENTSHREW_H_
 
-#include "ElephantShrewOverseer.h"
+#include "ElephantShrewOverseer.hpp"
 
 namespace ElephantShrew {
 
