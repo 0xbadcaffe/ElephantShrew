@@ -6,7 +6,8 @@ namespace ElephantShrew
 
 ThreadPool::ThreadPool(int num_threads = 1) 
 {
-    for (int i = 0; i < num_threads; i++) {
+    for (int i = 0; i < num_threads; i++) 
+    {
       m_pool.emplace_back(&ThreadPool::Run, this);
     }
 }
