@@ -37,5 +37,7 @@
   "files.associations": {
     "future": "cpp",
     "condition_variable": "cpp"
-  }
+  },
+  "C_Cpp.default.compileCommands": "/home/misteroy/Projects/github/ElephantShrew/ElephantShrew/builddir/compile_commands.json",
+  "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild"
 }
