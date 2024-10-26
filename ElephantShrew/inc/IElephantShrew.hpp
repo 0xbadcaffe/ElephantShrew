@@ -8,7 +8,7 @@
 #ifndef _IELEPHENTSHREW_H_
 #define _IELEPHENTSHREW_H_
 
-#include "ElephantShrewBootstrapper.hpp"
+#include <memory>
 
 namespace ElephantShrew {
 
@@ -16,8 +16,8 @@ class IElephantShrew {
 
 public :
 
-	virtual ~ElephantShrewBootstrapper() = default;
-	virtual std::unique_ptr<ElephantShrewBootstrapper> Init() = 0;
+	virtual ~IElephantShrew() = default;
+	virtual std::unique_ptr<IElephantShrew> Execute() = 0;
 
 };
 

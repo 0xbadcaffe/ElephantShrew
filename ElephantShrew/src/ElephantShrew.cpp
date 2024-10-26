@@ -4,18 +4,19 @@
  *  Created on: 31 May 2022
  *      Author: Roy Cohen
  */
-#include "ElephantShrewCommonDefs.h"
-#include "ElephantShrew.h"
-#include "UsbTransmitter.h"
-#include "UdpTransmitter.h"
-#include "UdpReceiver.h"
-#include "FileReceiver.h"
-#include "ElephantShrewProcessor.h"
+#include "ElephantShrewCommonDefs.hpp"
+#include "ElephantShrew.hpp"
+#include "UsbTransmitter.hpp"
+#include "UdpTransmitter.hpp"
+#include "UdpReceiver.hpp"
+#include "FileReceiver.hpp"
+#include "ElephantShrewProcessor.hpp"
 
 namespace ElephantShrew
 {
 
-std::shared_ptr<ElephantShrewOverseer> ElephantShrew::Init(){
+std::shared_ptr<ElephantShrewOverseer> ElephantShrew::Execute()
+{
 
 	std::cout << "ElephantShrew bootstrapper" << std::endl;
 

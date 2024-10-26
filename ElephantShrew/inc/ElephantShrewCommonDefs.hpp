@@ -1,12 +1,5 @@
-/*
- * ElephantShrewCommonDefs.h
- *
- *  Created on: 3 Jun 2022
- *      Author: Roy Cohen
- */
-
-#ifndef ELEPHENTSHREW_COMMONDEFS_H_
-#define ELEPHENTSHREW_COMMONDEFS_H_
+#ifndef _ELEPHENTSHREW_COMMONDEFS_H_
+#define _ELEPHENTSHREW_COMMONDEFS_H_
 
 
 namespace ElephantShrew {
@@ -31,6 +24,4 @@ constexpr auto ELEPHENTSHREW_MAX_COUNTS = 1000;
 
 }
 
-
-
-#endif /* ELEPHENTSHREW_COMMONDEFS_H_ */
+#endif // ELEPHENTSHREW_COMMONDEFS_H_

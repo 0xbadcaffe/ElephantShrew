@@ -1,22 +1,15 @@
-/*
- * ElephantShrew.h
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-
-#ifndef ELEPHENTSHREW_H_
-#define ELEPHENTSHREW_H_
+#ifndef _ELEPHENTSHREW_H_
+#define _ELEPHENTSHREW_H_
 
 #include <iostream>
 #include <memory>
-#include "IElephantShrew.h"
-#include "IElephantShrewReceiver.h"
-#include "IElephantShrewTransmitter.h"
-#include "IProcessor.h"
-#include "ElephantShrewInboundHandler.h"
-#include "ElephantShrewOutboundHandler.h"
-#include <ElephantShrewOverseer.h>
+#include "IElephantShrew.hpp"
+#include "IElephantShrewReceiver.hpp"
+#include "IElephantShrewTransmitter.hpp"
+#include "IProcessor.hpp"
+#include "ElephantShrewInboundHandler.hpp"
+#include "ElephantShrewOutboundHandler.hpp"
+#include "ElephantShrewOverseer.hpp"
 
 namespace ElephantShrew {
 
@@ -40,4 +33,4 @@ namespace ElephantShrew {
 
 
 
-#endif /* ELEPHENTSHREW_H_ */
+#endif // _ELEPHENTSHREW_H_

@@ -1,24 +1,21 @@
-/*
- * main.cpp
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-#include "ElephantShrew.h"
+#include <iostream>
+//#include "Bootstrapper.hpp"
 
 
-int main(int argc, char *argv[]) {
 
-	std::cout << "Hello ElephantShrew" << std::endl;
+int main([[maybe_unused]]int argc, [[maybe_unused]]char *argv[]) {
 
-	ElephantShrew::ElephantShrew ElephantShrew;
+    std::cout << "Hello ElephantShrew" << std::endl;
+
+    //ElephantShrew::Bootstrapper bootstrapper;
 
     try
     {
-    	/* Create ElephantShrew IOC container */
-    	auto ElephantShrewOverseer = ElephantShrew.Init();
-    	/* Start processing packets */
-    	ElephantShrewOverseer->Start();
+        std::cout << " try initializing ElephantShrew" << std::endl;
+        /* Create ElephantShrew IOC container */
+        //auto ElephantShrewOverseer = ElephantShrew.Init();
+        /* Start processing packets */
+        //ElephantShrewOverseer->Start();
     }
     catch (const std::exception& e)
     {

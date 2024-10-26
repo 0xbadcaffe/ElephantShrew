@@ -11,7 +11,7 @@
 #include <memory>
 #include <array>
 #include <iostream>
-#include "ElephantShrewCommonDefs.h"
+#include "ElephantShrewCommonDefs.hpp"
 
 namespace ElephantShrew {
 
