@@ -16,7 +16,7 @@ namespace ElephantShrew
         explicit ElephantShrewBootstrapper(ElephantShrewBootstrapper&& other) = delete;
         ElephantShrewBootstrapper& operator=(const ElephantShrewBootstrapper&& rhs) = delete;
 
-        virtual void Init();
+        void Strap();
 
         virtual ~ElephantShrewBootstrapper() = default;
 
