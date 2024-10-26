@@ -5,10 +5,10 @@
  *      Author: Roy Cohen
  */
 
-#ifndef IELEPHENTSHREW_H_
-#define IELEPHENTSHREW_H_
+#ifndef _IELEPHENTSHREW_H_
+#define _IELEPHENTSHREW_H_
 
-#include "ElephantShrewOverseer.hpp"
+#include "ElephantShrewBootstrapper.hpp"
 
 namespace ElephantShrew {
 
@@ -16,8 +16,8 @@ class IElephantShrew {
 
 public :
 
-	virtual ~IElephantShrew() = default;
-	virtual std::shared_ptr<ElephantShrewOverseer> Init() = 0;
+	virtual ~ElephantShrewBootstrapper() = default;
+	virtual std::unique_ptr<ElephantShrewBootstrapper> Init() = 0;
 
 };
 

@@ -1,29 +1,27 @@
 #ifndef _ELEPHANTSHREWBOOTSTRAPPER_
 #define _ELEPHANTSHREWBOOTSTRAPPER_
 
-#include "ElephantShrew.h"
-
 
 namespace ElephantShrew
 {
 
-	class ElephantShrewBootstrapper : public IElephantShrew {
+    class ElephantShrewBootstrapper
+    {
 
-	public:
+    public:
 
-		ElephantShrew() = default;
-		explicit ElephantShrew(const ElephantShrew& other) = delete;
-		ElephantShrew& operator=(const ElephantShrew& rhs) = delete;
-		explicit ElephantShrew(ElephantShrew&& other) = delete;
-		ElephantShrew& operator=(const ElephantShrew&& rhs) = delete;
+        ElephantShrewBootstrapper() = default;
+        explicit ElephantShrewBootstrapper(const ElephantShrewBootstrapper& other) = delete;
+        ElephantShrewBootstrapper& operator=(const ElephantShrewBootstrapper& rhs) = delete;
+        explicit ElephantShrewBootstrapper(ElephantShrewBootstrapper&& other) = delete;
+        ElephantShrewBootstrapper& operator=(const ElephantShrewBootstrapper&& rhs) = delete;
 
-		virtual std::shared_ptr<ElephantShrewOverseer> Init() override;
+        virtual void Init();
 
-		virtual ~ElephantShrew() = default;
+        virtual ~ElephantShrewBootstrapper() = default;
 
-	};
+    };
 
 }
 
-
-#endif /* _ELEPHANTSHREWBOOTSTRAPPER* /
+#endif //_ELEPHANTSHREWBOOTSTRAPPER_
