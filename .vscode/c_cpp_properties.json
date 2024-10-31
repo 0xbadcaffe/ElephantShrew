@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/ElephantShrew/inc/",
-                "/usr/local/include/"
+                "/usr/local/include/",
+                "/opt/include/"
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "${default}",

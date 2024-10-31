@@ -11,7 +11,7 @@ sources = [
 exe = executable(
   'elephantshrew',
   sources,
-  include_directories : ['inc'],
+  include_directories : ['inc','/opt/include'],
   install : true)
 
 test('basic', exe)
