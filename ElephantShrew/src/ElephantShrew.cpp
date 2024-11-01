@@ -6,10 +6,8 @@
  */
 #include "ElephantShrewCommonDefs.hpp"
 #include "ElephantShrew.hpp"
-#include "UsbTransmitter.hpp"
 #include "UdpTransmitter.hpp"
 #include "UdpReceiver.hpp"
-#include "FileReceiver.hpp"
 #include "ElephantShrewProcessor.hpp"
 
 namespace ElephantShrew

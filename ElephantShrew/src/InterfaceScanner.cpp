@@ -1,58 +1,36 @@
-#include <ifaddrs.h>
-#include <net/if.h>
-#include <arpa/inet.h>
 #include <iostream>
-#include <cstring>
-#include <string>
+#include <pcap.h>
+#include <PcapPlusPlus/NetworkUtils.h>
+#include <PcapPlusPlus/IpAddress.h>
+#include <PcapPlusPlus/PcapLiveDeviceList.h>
 
 void listNetworkInterfaces() {
-    struct ifaddrs* ifAddrStruct = nullptr;
-    struct ifaddrs* ifa = nullptr;
-
-    // Retrieve the list of network interfaces
-    if (getifaddrs(&ifAddrStruct) == -1) {
-        std::cerr << "Error getting network interfaces: " << strerror(errno) << std::endl;
+    // Get the list of network interfaces
+    auto* devList = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
+    
+    if (devList == nullptr || devList->empty()) {
+        std::cerr << "No network interfaces found.\n";
         return;
     }
 
-    // Loop through each network interface
-    for (ifa = ifAddrStruct; ifa != nullptr; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr == nullptr) continue;
+    for (auto* dev : *devList) {
+        // Display interface name and IP addresses
+        std::cout << "Interface: " << dev->getName() << '\n';
 
-        // Interface name
-        std::string interfaceName = ifa->ifa_name;
-        std::cout << "Interface: " << interfaceName << std::endl;
-
-        // Check if the address is IPv4
-        if (ifa->ifa_addr->sa_family == AF_INET) {
-            char ipAddress[INET_ADDRSTRLEN];
-            struct sockaddr_in* sa = reinterpret_cast<struct sockaddr_in*>(ifa->ifa_addr);
-            inet_ntop(AF_INET, &sa->sin_addr, ipAddress, INET_ADDRSTRLEN);
-            std::cout << "  IPv4 Address: " << ipAddress << std::endl;
-        }
-        // Check if the address is IPv6
-        else if (ifa->ifa_addr->sa_family == AF_INET6) {
-            char ipAddress[INET6_ADDRSTRLEN];
-            struct sockaddr_in6* sa = reinterpret_cast<struct sockaddr_in6*>(ifa->ifa_addr);
-            inet_ntop(AF_INET6, &sa->sin6_addr, ipAddress, INET6_ADDRSTRLEN);
-            std::cout << "  IPv6 Address: " << ipAddress << std::endl;
+        // Check if the device has IPv4 address
+        if (dev->getIPv4Address() != pcpp::IPv4Address::Zero) {
+            std::cout << "  IPv4 Address: " << dev->getIPv4Address().toString() << '\n';
         }
 
-        // Additional flags, such as checking if the interface is up
-        if (ifa->ifa_flags & IFF_UP) {
-            std::cout << "  Status: UP" << std::endl;
-        } else {
-            std::cout << "  Status: DOWN" << std::endl;
+        // Check if the device has IPv6 address
+        if (dev->getIPv6Address() != pcpp::IPv6Address::Zero) {
+            std::cout << "  IPv6 Address: " << dev->getIPv6Address().toString() << '\n';
         }
 
-        // Check if the interface is loopback
-        if (ifa->ifa_flags & IFF_LOOPBACK) {
-            std::cout << "  Type: Loopback" << std::endl;
-        } else {
-            std::cout << "  Type: Physical" << std::endl;
-        }
+        // Print interface status (UP/DOWN)
+        std::cout << "  Status: " << (dev->isUp() ? "UP" : "DOWN") << '\n';
+
+        // Check if the device is loopback
+        std::cout << "  Type: " << (dev->isLoopback() ? "Loopback" : "Physical") << '\n';
     }
-
-    // Free the linked list
-    freeifaddrs(ifAddrStruct);
 }
