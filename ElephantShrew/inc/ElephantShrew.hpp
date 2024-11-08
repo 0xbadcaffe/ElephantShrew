@@ -23,7 +23,7 @@ namespace ElephantShrew {
 		explicit ElephantShrew(ElephantShrew&& other) = delete;
 		ElephantShrew& operator=(const ElephantShrew&& rhs) = delete;
 
-		virtual std::shared_ptr<ElephantShrewOverseer> Init() override;
+		virtual void Init() override;
 
 		virtual ~ElephantShrew() = default;
 

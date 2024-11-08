@@ -17,7 +17,7 @@ class IElephantShrew {
 public :
 
     virtual ~IElephantShrew() = default;
-    virtual std::unique_ptr<IElephantShrew> Init() = 0;
+    virtual void Init() = 0;
 
 };
 

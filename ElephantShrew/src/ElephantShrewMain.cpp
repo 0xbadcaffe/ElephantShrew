@@ -1,19 +1,21 @@
 #include <iostream>
 #include "Bootstrapper.hpp"
+#include <spdlog/spdlog.h>
 
 
 
 int main([[maybe_unused]]int argc, [[maybe_unused]]char *argv[]) {
 
-    std::cout << "Hello ElephantShrew" << std::endl;
+    spdlog::info("Hello world ElephantShrew");
 
     ElephantShrew::Bootstrapper bootstrapper;
 
     try
     {
-        std::cout << " try initializing ElephantShrew" << std::endl;
+        spdlog::info("Try to initialize Bootstrapper");
         /* Create ElephantShrew IOC container */
-        //auto ElephantShrewOverseer = ElephantShrew.Init();
+        bootstrapper.Strap();
+        bootstrapper.Resolve();
         /* Start processing packets */
         //ElephantShrewOverseer->Start();
     }

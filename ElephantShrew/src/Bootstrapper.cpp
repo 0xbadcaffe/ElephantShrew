@@ -1,5 +1,5 @@
 #include <memory>
-#include <tbb/flow_graph.h>
+//#include <tbb/flow_graph.h>
 #include "Bootstrapper.hpp"
 #include "ElephantShrew.hpp"
 
@@ -8,7 +8,7 @@ namespace ElephantShrew
 
 void Bootstrapper::Strap()
 {
-    builder_ = std::make_shared<Hypodermic::ContainerBuilder>();
+    builder_ = std::make_shared< Hypodermic::ContainerBuilder >();
 
     builder_->registerType<ElephantShrew>()
         .as<IElephantShrew>(); 
@@ -25,7 +25,7 @@ void Bootstrapper::Resolve()
 
 Bootstrapper::~Bootstrapper()
 {
-
+    //TODO clear IOC container
 }
 
 }

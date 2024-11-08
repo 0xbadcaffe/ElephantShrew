@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include "CommonDefs.hpp"
 #include "ElephantShrew.hpp"
 #include "UdpTransmitter.hpp"
@@ -7,10 +8,10 @@
 namespace ElephantShrew
 {
 
-std::shared_ptr<ElephantShrewOverseer> ElephantShrew::Init()
+void ElephantShrew::Init()
 {
 
-    std::cout << "ElephantShrew::Init" << std::endl;
+    spdlog::info("ElephantShrew::Init");
 
 	// // Create transmitter according to configuration
 	// std::shared_ptr<IElephantShrewTransmitter> transmitter;

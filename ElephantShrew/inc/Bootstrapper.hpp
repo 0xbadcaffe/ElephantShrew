@@ -20,7 +20,7 @@ namespace ElephantShrew
         void Strap();
         void Resolve();
 
-        virtual ~Bootstrapper() = default;
+        virtual ~Bootstrapper();
 
     private:
         std::shared_ptr<Hypodermic::ContainerBuilder> builder_;
