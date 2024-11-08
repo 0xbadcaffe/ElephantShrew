@@ -17,7 +17,7 @@ namespace ElephantShrew {
 
 	public:
 
-		ElephantShrew() = default;
+		explicit ElephantShrew() = default;
 		explicit ElephantShrew(const ElephantShrew& other) = delete;
 		ElephantShrew& operator=(const ElephantShrew& rhs) = delete;
 		explicit ElephantShrew(ElephantShrew&& other) = delete;
