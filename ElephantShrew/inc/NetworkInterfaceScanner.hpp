@@ -1,0 +1,25 @@
+#ifndef _NETWORKINTERFACESCANNER_
+#define _NETWORKINTERFACESCANNER_
+
+namespace NetworkInterfaceScanner {
+
+class NetworkInterfaceScanner {
+
+    public:
+
+        explicit NetworkInterfaceScanner() = default;
+        explicit NetworkInterfaceScanner(const NetworkInterfaceScanner& other) = delete;
+        NetworkInterfaceScanner& operator=(const NetworkInterfaceScanner& rhs) = delete;
+        explicit NetworkInterfaceScanner(NetworkInterfaceScanner&& other) = delete;
+        NetworkInterfaceScanner& operator=(const NetworkInterfaceScanner&& rhs) = delete;
+
+        void Scan();
+
+        virtual ~NetworkInterfaceScanner() = default;
+
+    };
+
+}
+
+
+#endif // _NETWORKINTERFACESCANNER_
