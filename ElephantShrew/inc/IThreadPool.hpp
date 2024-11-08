@@ -1,13 +1,7 @@
-/*
- * IThreadPool.hpp
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
+#ifndef _ITHREADPOOL_H_
+#define _ITHREADPOOL_H_
 
-#ifndef ITHREADPOOL_H_
-#define ITHREADPOOL_H_
-
+#include <future>
 
 namespace ElephantShrew {
 
@@ -23,4 +17,4 @@ public :
 }
 
 
-#endif /* ITHREADPOOL_H_ */
+#endif // _ITHREADPOOL_H_

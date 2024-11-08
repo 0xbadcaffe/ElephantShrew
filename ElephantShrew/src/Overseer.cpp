@@ -1,10 +1,4 @@
-/*
- * ElephantShrewOverseer.cpp
- *
- *  Created on: 3 Jun 2022
- *      Author: Roy Cohen
- */
-#include "ElephantShrewOverseer.h"
+#include "Overseer.h"
 
 namespace ElephantShrew {
 

@@ -4,12 +4,12 @@
 #include <iostream>
 #include <memory>
 #include "IElephantShrew.hpp"
-#include "IElephantShrewReceiver.hpp"
-#include "IElephantShrewTransmitter.hpp"
+#include "IReceiver.hpp"
+#include "ITransmitter.hpp"
 #include "IProcessor.hpp"
-#include "ElephantShrewInboundHandler.hpp"
-#include "ElephantShrewOutboundHandler.hpp"
-#include "ElephantShrewOverseer.hpp"
+#include "InboundHandler.hpp"
+#include "OutboundHandler.hpp"
+#include "Overseer.hpp"
 
 namespace ElephantShrew {
 

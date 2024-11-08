@@ -1,24 +1,18 @@
-/*
- * IUdpTransmitter.h
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-
 #ifndef IUDPTRANSMITTER_H_
 #define IUDPTRANSMITTER_H_
 
-#include "IElephantShrewTransmitter.h"
+#include "ITransmitter.hpp"
 
 namespace ElephantShrew {
 
-class IUdpTransmitter : public IElephantShrewTransmitter {
+class IUdpTransmitter : public ITransmitter {
 
 public:
 
-	virtual ~IUdpTransmitter() = default;
+    virtual ~IUdpTransmitter() = default;
+    virtual bool Transmit() = 0;
 
 };
 }
 
-#endif /* IUDPTRANSMITTER_H_ */
+#endif // _IUDPTRANSMITTER_H_

@@ -1,4 +1,5 @@
 #include <memory>
+#include <tbb/flow_graph.h>
 #include "Bootstrapper.hpp"
 #include "ElephantShrew.hpp"
 

@@ -1,9 +1,3 @@
-/*
- * ElephantShrew.h
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
 #include "ThreadPool.hpp"
 
 

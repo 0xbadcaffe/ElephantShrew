@@ -1,6 +1,5 @@
-#ifndef _ELEPHENTSHREW_COMMONDEFS_H_
-#define _ELEPHENTSHREW_COMMONDEFS_H_
-
+#ifndef _COMMONDEFS_H_
+#define _COMMONDEFS_H_
 
 namespace ElephantShrew {
 /*
@@ -24,4 +23,4 @@ constexpr auto ELEPHENTSHREW_MAX_COUNTS = 1000;
 
 }
 
-#endif // ELEPHENTSHREW_COMMONDEFS_H_
+#endif // _COMMONDEFS_H_

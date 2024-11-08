@@ -1,14 +1,7 @@
-/*
- * UdpTransmitter.h
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
+#ifndef _UDPTRANSMITTER_H_
+#define _UDPTRANSMITTER_H_
 
-#ifndef UDPTRANSMITTER_H_
-#define UDPTRANSMITTER_H_
-
-#include "IUdpTransmitter.h"
+#include "IUdpTransmitter.hpp"
 
 namespace ElephantShrew {
 
@@ -23,7 +16,7 @@ namespace ElephantShrew {
 		UdpTransmitter& operator=(const UdpTransmitter&& rhs) = delete;
 		virtual ~UdpTransmitter() = default;
 
-		virtual bool Transmit(const uint64_t output) override;
+		virtual bool Transmit() override;
 
 	};
 

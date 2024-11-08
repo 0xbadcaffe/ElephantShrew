@@ -1,15 +1,8 @@
-/*
- * UdpReceiver.h
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-
 #ifndef UDPRECEIVER_H_
 #define UDPRECEIVER_H_
 
 #include <fstream>
-#include "IUdpReceiver.h"
+#include "IUdpReceiver.hpp"
 
 namespace ElephantShrew {
 
@@ -23,7 +16,7 @@ namespace ElephantShrew {
 		UdpReceiver& operator=(const UdpReceiver&& rhs) = delete;
 		virtual ~UdpReceiver() = default;
 
-		virtual std::shared_ptr<std::array<uint32_t,ElephantShrew_LINE_SIZE>> Receive() override;
+		virtual void Receive() override;
 
 	private:
 

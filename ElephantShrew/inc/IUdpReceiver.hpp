@@ -1,23 +1,16 @@
-/*
- * IUdpReceiver.h
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-
 #ifndef IUDPRECEIVER_H_
 #define IUDPRECEIVER_H_
 
-#include "IElephantShrewReceiver.h"
+#include "IReceiver.hpp"
 
 namespace ElephantShrew {
 
 
-class IUdpReceiver : public IElephantShrewReceiver {
+class IUdpReceiver : public IReceiver {
 
 public:
 
-	virtual ~IUdpReceiver() = default;
+    virtual ~IUdpReceiver() = default;
 
 };
 

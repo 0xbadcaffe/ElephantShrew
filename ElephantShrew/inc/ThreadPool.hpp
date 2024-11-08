@@ -1,12 +1,5 @@
-/*
- * ThreadPool.hpp
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-
-#ifndef THREADPOOL_H_
-#define THREADPOOL_H
+#ifndef _THREADPOOL_H_
+#define _THREADPOOL_H
 
 #include <iostream>
 #include <memory>
@@ -24,21 +17,19 @@
 namespace ElephantShrew 
 {
 
-	class ThreadPool : public IThreadPool 
-	{
+class ThreadPool : public IThreadPool {
+    public:
+        explicit ThreadPool(int num_threads);
+        //copying is disabled
+        explicit ThreadPool(const ThreadPool& other) = delete;
+        ThreadPool& operator=(const ThreadPool& rhs) = delete;
+        explicit ThreadPool(ThreadPool&& other) = delete;
+        ThreadPool& operator=(const ThreadPool&& rhs) = delete;
+        virtual ~ThreadPool() = default;
 
-	public:
-		explicit ThreadPool(int num_threads);
-		//copying is disabled
-		explicit ThreadPool(const ThreadPool& other) = delete;
-		ThreadPool& operator=(const ThreadPool& rhs) = delete;
-		explicit ThreadPool(ThreadPool&& other) = delete;
-		ThreadPool& operator=(const ThreadPool&& rhs) = delete;
-		virtual ~ThreadPool() = default;
+        void Post(std::packaged_task<void()> job) override;
 
-		void Post(std::packaged_task<void()> job) override;
-
-	private:
+    private:
 
         void Run() noexcept; 
 
@@ -48,9 +39,8 @@ namespace ElephantShrew
         std::mutex guard;
         std::deque<std::packaged_task<void()>> m_pending_jobs;
 
-
-	};
+    };
 
 }
 
-#endif /* THREADPOOL_H */
+#endif // _THREADPOOL_H
