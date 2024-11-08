@@ -2,6 +2,7 @@
 //#include <tbb/flow_graph.h>
 #include "Bootstrapper.hpp"
 #include "ElephantShrew.hpp"
+#include "NetworkInterfaceScanner.hpp"
 
 namespace ElephantShrew
 {
