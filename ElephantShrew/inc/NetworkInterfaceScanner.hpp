@@ -7,7 +7,7 @@ class NetworkInterfaceScanner {
 
     public:
 
-        explicit NetworkInterfaceScanner() = default;
+        NetworkInterfaceScanner() = default;
         explicit NetworkInterfaceScanner(const NetworkInterfaceScanner& other) = delete;
         NetworkInterfaceScanner& operator=(const NetworkInterfaceScanner& rhs) = delete;
         explicit NetworkInterfaceScanner(NetworkInterfaceScanner&& other) = delete;

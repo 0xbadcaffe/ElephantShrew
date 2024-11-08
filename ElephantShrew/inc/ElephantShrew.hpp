@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <memory>
-#include "IElephantShrew.hpp"
+#include "int/IElephantShrew.hpp"
 #include "IReceiver.hpp"
 #include "ITransmitter.hpp"
 #include "IProcessor.hpp"
