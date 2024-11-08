@@ -1,10 +1,4 @@
-/*
- * ElephantShrewInboundHandler.cpp
- *
- *  Created on: 3 Jun 2022
- *      Author: Roy Cohen
- */
-#include "ElephantShrewInboundHandler.h"
+#include "InboundHandler.h"
 
 namespace ElephantShrew {
 

@@ -1,11 +1,5 @@
-/*
- * UdpReceiver.cpp
- *
- *  Created on: 1 Jun 2022
- *      Author: Roy Cohen
- */
 #include <memory>
-#include "UdpReceiver.h"
+#include "UdpReceiver.hpp"
 
 namespace ElephantShrew {
 

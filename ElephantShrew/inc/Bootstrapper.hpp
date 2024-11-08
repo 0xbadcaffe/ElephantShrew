@@ -14,7 +14,7 @@ namespace ElephantShrew
         Bootstrapper() = default;
         explicit Bootstrapper(const Bootstrapper& other) = delete;
         Bootstrapper& operator=(const Bootstrapper& rhs) = delete;
-        explicit ElephantShrewBootstrapper(Bootstrapper&& other) = delete;
+        explicit Bootstrapper(Bootstrapper&& other) = delete;
         Bootstrapper& operator=(const Bootstrapper&& rhs) = delete;
 
         void Strap();
@@ -23,8 +23,8 @@ namespace ElephantShrew
         virtual ~Bootstrapper();
 
     private:
-        std::shared_ptr<ContainerBuilder> _builder;
-        std::shared_ptr<Container>        _container;
+        std::shared_ptr<Hypodermic::ContainerBuilder> _builder;
+        std::shared_ptr<Hypodermic::Container>        _container;
 
     };
 

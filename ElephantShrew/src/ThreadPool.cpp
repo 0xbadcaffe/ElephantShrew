@@ -1,6 +1,5 @@
 #include "ThreadPool.hpp"
 
-
 namespace ElephantShrew 
 {
 

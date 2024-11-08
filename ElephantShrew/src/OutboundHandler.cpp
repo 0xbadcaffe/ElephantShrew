@@ -1,11 +1,5 @@
-/*
- * ElephantShrewOutboundHandler.cpp
- *
- *  Created on: 3 Jun 2022
- *      Author: Roy Cohen
- */
 #include <thread>
-#include "ElephantShrewOutboundHandler.h"
+#include "OutboundHandler.hpp"
 
 namespace ElephantShrew {
 

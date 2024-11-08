@@ -1,17 +1,11 @@
-/*
- * UdpTransmitter.cpp
- *
- *  Created on: 31 May 2022
- *      Author: Roy Cohen
- */
-#include <UdpTransmitter.h>
+#include <UdpTransmitter.hpp>
 #include <iostream>
 
 namespace  ElephantShrew {
 
-bool UdpTransmitter::Transmit(const uint64_t output) {
-	std::cout << "UDP Transmit - " << output << std::endl;
-	return true;
+bool UdpTransmitter::Transmit() {
+    std::cout << "UDP Transmit - " << std::endl; //write and flush
+    return true;
 }
 
 

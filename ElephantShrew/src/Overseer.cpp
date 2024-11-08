@@ -1,14 +1,14 @@
-#include "Overseer.h"
+#include "ElephantShrewOverseer.hpp"
 
 namespace ElephantShrew {
 
 ElephantShrewOverseer::ElephantShrewOverseer(
 				std::shared_ptr<IProcessor> processor,
-				std::shared_ptr<ElephantShrewOutboundHandler> ElephantShrewOutboundHandler,
-				std::shared_ptr<ElephantShrewInboundHandler>  ElephantShrewInboundHandler) :
+				std::shared_ptr<OutboundHandler> outboundHandler,
+				std::shared_ptr<InboundHandler>  inboundHandler) :
 					   m_processor(processor),
-					   m_ElephantShrewOutboundHandler(ElephantShrewOutboundHandler),
-					   m_ElephantShrewInboundHandler(ElephantShrewInboundHandler),
+					   m_ElephantShrewOutboundHandler(outboundHandler),
+					   m_ElephantShrewInboundHandler(inboundHandler),
 					   m_processingOutputs(),
 					   m_isInboundStopped(false),
 					   m_isOutboundStopped(false),

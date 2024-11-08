@@ -9,7 +9,7 @@
 #include "IProcessor.hpp"
 #include "InboundHandler.hpp"
 #include "OutboundHandler.hpp"
-#include "Overseer.hpp"
+#include "ElephantShrewOverseer.hpp"
 
 namespace ElephantShrew {
 

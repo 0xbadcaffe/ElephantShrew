@@ -1,12 +1,5 @@
-/*
- * ElephantShrewProcessor.cpp
- *
- *  Created on: 3 Jun 2022
- *      Author: Roy Cohen
- */
 #include <numeric>
-#include "ElephantShrewProcessor.h"
-
+#include "Processor.hpp"
 
 namespace ElephantShrew {
 
