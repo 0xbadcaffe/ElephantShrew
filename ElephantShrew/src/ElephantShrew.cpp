@@ -10,7 +10,7 @@ namespace ElephantShrew
 std::shared_ptr<ElephantShrewOverseer> ElephantShrew::Init()
 {
 
-	// std::cout << "ElephantShrew bootstrapper" << std::endl;
+    std::cout << "ElephantShrew::Init" << std::endl;
 
 	// // Create transmitter according to configuration
 	// std::shared_ptr<IElephantShrewTransmitter> transmitter;

@@ -8,19 +8,19 @@ namespace ElephantShrew
 
 void Bootstrapper::Strap()
 {
-    _builder = std::make_shared<Hypodermic::ContainerBuilder>();
+    builder_ = std::make_shared<Hypodermic::ContainerBuilder>();
 
-    _builder->registerType<ElephantShrew>()
+    builder_->registerType<ElephantShrew>()
         .as<IElephantShrew>(); 
 
-    _container = builder->build();
+    container_ = builder_->build();
 }
 
 void Bootstrapper::Resolve()
 {
-    auto elephantShrew = _container->resolve< ElephantShrew >();
+    auto elephantShrew = container_->resolve< ElephantShrew >();
 
-    elephantShrew.E
+    elephantShrew->Init();
 }
 
 Bootstrapper::~Bootstrapper()

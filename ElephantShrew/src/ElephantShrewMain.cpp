@@ -7,7 +7,7 @@ int main([[maybe_unused]]int argc, [[maybe_unused]]char *argv[]) {
 
     std::cout << "Hello ElephantShrew" << std::endl;
 
-    //ElephantShrew::Bootstrapper bootstrapper;
+    ElephantShrew::Bootstrapper bootstrapper;
 
     try
     {
