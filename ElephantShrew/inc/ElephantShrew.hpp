@@ -6,7 +6,6 @@
 #include "IElephantShrew.hpp"
 #include "IReceiver.hpp"
 #include "ITransmitter.hpp"
-#include "IProcessor.hpp"
 #include "InboundHandler.hpp"
 #include "OutboundHandler.hpp"
 #include "ElephantShrewSuper.hpp"

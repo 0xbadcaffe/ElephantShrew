@@ -11,20 +11,20 @@ void Bootstrapper::Strap()
 {
     builder_ = std::make_shared< Hypodermic::ContainerBuilder >();
 
-    builder_->registerType<ElephantShrew>()
-        .as<IElephantShrew>(); 
+    // builder_->registerType<ElephantShrew>()
+    //     .as<IElephantShrew>(); 
 
-    builder_->registerType<NetworkInterfaceScanner>()
-        .as<NetworkInterfaceScanner>(); 
+    // builder_->registerType<NetworkInterfaceScanner>()
+    //     .as<NetworkInterfaceScanner>(); 
 
     container_ = builder_->build();
 }
 
 void Bootstrapper::Resolve()
 {
-    auto elephantShrew = container_->resolve< ElephantShrew >();
+    // auto elephantShrew = container_->resolve< ElephantShrew >();
 
-    elephantShrew->Init();
+    // elephantShrew->Init();
 }
 
 Bootstrapper::~Bootstrapper()

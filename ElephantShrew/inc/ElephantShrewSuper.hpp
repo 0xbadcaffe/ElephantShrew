@@ -7,7 +7,7 @@
 #include <condition_variable>
 #include <atomic>
 
-#include "IProcessor.hpp"
+#include "DataProcessor.hpp"
 #include "InboundHandler.hpp"
 #include "OutboundHandler.hpp"
 
@@ -17,7 +17,7 @@ namespace ElephantShrew {
 
     public:
 
-        ElephantShrewSuper(std::shared_ptr<IProcessor> processor,
+        ElephantShrewSuper(std::shared_ptr<ITask> processor,
         std::shared_ptr<OutboundHandler> OutboundHandler,
         std::shared_ptr<InboundHandler>  InboundHandler);
         explicit ElephantShrewSuper(const ElephantShrewSuper& other) = delete;
@@ -35,7 +35,7 @@ namespace ElephantShrew {
         void inboundThreadFunction(void);
         void outboundThreadFunction(void);
 
-        std::shared_ptr<IProcessor>         m_processor;
+        std::shared_ptr<ITask>              m_processor;
         std::shared_ptr<OutboundHandler>    m_ElephantShrewOutboundHandler;
         std::shared_ptr<InboundHandler>     m_ElephantShrewInboundHandler;
 
@@ -49,4 +49,4 @@ namespace ElephantShrew {
 
 }
 
-#endif // _ELEPHANTSHREWsuper_H_
+#endif // _ELEPHANTSHREWSUPER_H_

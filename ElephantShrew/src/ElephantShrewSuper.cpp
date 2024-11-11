@@ -3,7 +3,7 @@
 namespace ElephantShrew {
 
 ElephantShrewSuper::ElephantShrewSuper(
-				std::shared_ptr<IProcessor> processor,
+				std::shared_ptr<ITask> processor,
 				std::shared_ptr<OutboundHandler> outboundHandler,
 				std::shared_ptr<InboundHandler>  inboundHandler) :
 					   m_processor(processor),

@@ -25,7 +25,7 @@ class ThreadPool : public IThreadPool {
         ThreadPool& operator=(const ThreadPool& rhs) = delete;
         explicit ThreadPool(ThreadPool&& other) = delete;
         ThreadPool& operator=(const ThreadPool&& rhs) = delete;
-        virtual ~ThreadPool() = default;
+        virtual ~ThreadPool();
 
         void Post(std::packaged_task<void()> job) override;
 
