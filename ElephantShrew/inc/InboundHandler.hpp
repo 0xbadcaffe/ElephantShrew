@@ -20,7 +20,7 @@ public:
 
 private:
 
-    std::shared_ptr<IReceiver> m_Receiver;
+    std::shared_ptr<IReceiver> receiver_;
 
     };
 

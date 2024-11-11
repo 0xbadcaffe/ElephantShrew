@@ -1,7 +1,7 @@
 #ifndef _NETWORKINTERFACESCANNER_
 #define _NETWORKINTERFACESCANNER_
 
-namespace NetworkInterfaceScanner {
+namespace ElephantShrew {
 
 class NetworkInterfaceScanner {
 

@@ -5,7 +5,7 @@
 #include <NetworkInterfaceScanner.hpp>
 
 
-namespace NetworkInterfaceScanner {
+namespace ElephantShrew {
 
 void NetworkInterfaceScanner::Scan() {
 

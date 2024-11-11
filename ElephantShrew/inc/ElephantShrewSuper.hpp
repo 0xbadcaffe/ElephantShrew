@@ -1,5 +1,5 @@
-#ifndef _ELEPHANTSHREWOVERSEER_H_
-#define _ELEPHANTSHREWOVERSEER_H_
+#ifndef _ELEPHANTSHREWSUPER_H_
+#define _ELEPHANTSHREWSUPER_H_
 
 #include <queue>
 #include <thread>
@@ -13,22 +13,22 @@
 
 namespace ElephantShrew {
 
-    class ElephantShrewOverseer {
+    class ElephantShrewSuper {
 
     public:
 
-        ElephantShrewOverseer(std::shared_ptr<IProcessor> processor,
+        ElephantShrewSuper(std::shared_ptr<IProcessor> processor,
         std::shared_ptr<OutboundHandler> OutboundHandler,
         std::shared_ptr<InboundHandler>  InboundHandler);
-        explicit ElephantShrewOverseer(const ElephantShrewOverseer& other) = delete;
-        ElephantShrewOverseer& operator=(const ElephantShrewOverseer& rhs) = delete;
-        explicit ElephantShrewOverseer(ElephantShrewOverseer&& other) = delete;
-        ElephantShrewOverseer& operator=(const ElephantShrewOverseer&& rhs) = delete;
+        explicit ElephantShrewSuper(const ElephantShrewSuper& other) = delete;
+        ElephantShrewSuper& operator=(const ElephantShrewSuper& rhs) = delete;
+        explicit ElephantShrewSuper(ElephantShrewSuper&& other) = delete;
+        ElephantShrewSuper& operator=(const ElephantShrewSuper&& rhs) = delete;
 
         void Start();
         void Stop();
 
-        virtual ~ElephantShrewOverseer() = default;
+        virtual ~ElephantShrewSuper() = default;
 
     private:
 
@@ -49,4 +49,4 @@ namespace ElephantShrew {
 
 }
 
-#endif // _ELEPHANTSHREWOVERSEER_H_
+#endif // _ELEPHANTSHREWsuper_H_

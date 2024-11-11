@@ -10,7 +10,7 @@ class IUdpTransmitter : public ITransmitter {
 public:
 
     virtual ~IUdpTransmitter() = default;
-    virtual bool Transmit() = 0;
+    virtual void Transmit() = 0;
 
 };
 }

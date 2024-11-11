@@ -10,18 +10,18 @@ class OutboundHandler {
 
 public:
 
-    OutboundHandler(std::shared_ptr<OutboundHandler> ElephantShrewTransmitter);
+    explicit OutboundHandler(std::shared_ptr<ITransmitter> transmitter);
     explicit OutboundHandler(const OutboundHandler& other) = delete;
     OutboundHandler& operator=(const OutboundHandler& rhs) = delete;
     explicit OutboundHandler(OutboundHandler&& other) = delete;
     OutboundHandler& operator=(const OutboundHandler&& rhs) = delete;
     virtual ~OutboundHandler() = default;
 
-    void SendOutbound(uint64_t output);
+    void SendOutbound(void);
 
 private:
 
-    std::shared_ptr<ITransmitter> m_Transmitter;
+    std::shared_ptr<ITransmitter> transmitter_;
 };
 
 

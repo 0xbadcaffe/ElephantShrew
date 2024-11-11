@@ -16,7 +16,7 @@ namespace ElephantShrew {
 		UdpTransmitter& operator=(const UdpTransmitter&& rhs) = delete;
 		virtual ~UdpTransmitter() = default;
 
-		virtual bool Transmit() override;
+		virtual void Transmit() override;
 
 	};
 

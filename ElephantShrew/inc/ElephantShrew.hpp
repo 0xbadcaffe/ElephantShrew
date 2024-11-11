@@ -3,34 +3,32 @@
 
 #include <iostream>
 #include <memory>
-#include "int/IElephantShrew.hpp"
+#include "IElephantShrew.hpp"
 #include "IReceiver.hpp"
 #include "ITransmitter.hpp"
 #include "IProcessor.hpp"
 #include "InboundHandler.hpp"
 #include "OutboundHandler.hpp"
-#include "ElephantShrewOverseer.hpp"
+#include "ElephantShrewSuper.hpp"
 
 namespace ElephantShrew {
 
-	class ElephantShrew : public IElephantShrew {
+    class ElephantShrew : public IElephantShrew {
 
-	public:
+    public:
 
-		explicit ElephantShrew() = default;
-		explicit ElephantShrew(const ElephantShrew& other) = delete;
-		ElephantShrew& operator=(const ElephantShrew& rhs) = delete;
-		explicit ElephantShrew(ElephantShrew&& other) = delete;
-		ElephantShrew& operator=(const ElephantShrew&& rhs) = delete;
+        explicit ElephantShrew() = default;
+        explicit ElephantShrew(const ElephantShrew& other) = delete;
+        ElephantShrew& operator=(const ElephantShrew& rhs) = delete;
+        explicit ElephantShrew(ElephantShrew&& other) = delete;
+        ElephantShrew& operator=(const ElephantShrew&& rhs) = delete;
 
-		virtual void Init() override;
+        virtual void Init() override;
 
-		virtual ~ElephantShrew() = default;
-
-	};
+        virtual ~ElephantShrew() = default;
+        
+    };
 
 }
-
-
 
 #endif // _ELEPHENTSHREW_H_

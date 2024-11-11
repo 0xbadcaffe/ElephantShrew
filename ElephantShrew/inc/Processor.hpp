@@ -1,11 +1,11 @@
 #ifndef _PROCESSOR_H_
 #define _PROCESSOR_H_
 
-#include "IProcessor.hpp"
+#include "ITask.hpp"
 
 namespace ElephantShrew {
 
-class ElephantShrewProcessor : public IProcessor {
+class DataProcessor : public IProcessor {
 
 public:
 

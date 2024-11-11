@@ -1,14 +1,14 @@
-#include "InboundHandler.h"
+#include "InboundHandler.hpp"
 
 namespace ElephantShrew {
 
-ElephantShrewInboundHandler::ElephantShrewInboundHandler(std::shared_ptr<IElephantShrewReceiver>	ElephantShrewReceiver)
-		: m_ElephantShrewReceiver(ElephantShrewReceiver) {
+InboundHandler::InboundHandler(std::shared_ptr<IReceiver>	ElephantShrewReceiver)
+		: receiver_(ElephantShrewReceiver) {
 
 }
 
-std::shared_ptr<std::array<uint32_t,ElephantShrew_LINE_SIZE>> ElephantShrewInboundHandler::GetInbound() {
-	return m_ElephantShrewReceiver->Receive();
+void InboundHandler::GetInbound() {
+	receiver_->Receive();
 }
 
 }

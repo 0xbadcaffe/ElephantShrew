@@ -1,5 +1,5 @@
-#ifndef IElephantShrewTRANSMITTER_H_
-#define IElephantShrewTRANSMITTER_H_
+#ifndef _ITRANSMITTER_H_
+#define _ITRANSMITTER_H_
 
 namespace ElephantShrew {
 
@@ -8,7 +8,7 @@ class ITransmitter {
 public:
 
         virtual ~ITransmitter() = default;
-        virtual bool Transmit() = 0;
+        virtual void Transmit() = 0;
 
     };
 }
