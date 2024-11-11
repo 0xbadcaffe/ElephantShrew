@@ -14,8 +14,7 @@ void Bootstrapper::Strap()
     builder_->registerType<ElephantShrew>()
         .as<IElephantShrew>(); 
 
-    // builder_->registerType<NetworkInterfaceScanner>()
-    //     .as<NetworkInterfaceScanner>(); 
+    builder_->registerType<NetworkInterfaceScanner>();
 
     container_ = builder_->build();
 }
@@ -23,8 +22,10 @@ void Bootstrapper::Strap()
 void Bootstrapper::Resolve()
 {
     auto elephantShrew = container_->resolve< ElephantShrew >();
+    auto networkIntScanner = container_->resolve< NetworkInterfaceScanner >();
 
     elephantShrew->Init();
+    networkIntScanner->Scan();
 }
 
 Bootstrapper::~Bootstrapper()

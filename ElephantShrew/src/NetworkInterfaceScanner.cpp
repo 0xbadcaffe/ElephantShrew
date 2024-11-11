@@ -31,11 +31,10 @@ void NetworkInterfaceScanner::Scan() {
             std::cout << "  IPv6 Address: " << dev->getIPv6Address().toString() << '\n';
         }
 
-        // Print interface status (UP/DOWN)
-        //std::cout << "  Status: " << (dev->isUp() ? "UP" : "DOWN") << '\n';
+        std::cout << "  Mac Address: " << dev->getMacAddress().toString() << '\n';
 
         // Check if the device is loopback
-        //std::cout << "  Type: " << (dev->isLoopback() ? "Loopback" : "Physical") << '\n';
+        std::cout << "  Type: " << dev->getDeviceType() << '\n';
     }
 }
 
