@@ -32,8 +32,6 @@ void NetworkInterfaceScanner::Scan() {
         }
 
         std::cout << "  Mac Address: " << dev->getMacAddress().toString() << '\n';
-
-        // Check if the device is loopback
         std::cout << "  Type: " << dev->getDeviceType() << '\n';
     }
 }
