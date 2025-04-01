@@ -14,6 +14,7 @@ class NetworkInterfaceScanner {
         NetworkInterfaceScanner& operator=(const NetworkInterfaceScanner&& rhs) = delete;
 
         void Scan();
+        int SavePackets();
 
         virtual ~NetworkInterfaceScanner() = default;
 

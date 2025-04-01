@@ -1,4 +1,6 @@
 #include <memory>
+#include <boost/version.hpp>
+#include <spdlog/spdlog.h>
 //#include <tbb/flow_graph.h>
 #include "Bootstrapper.hpp"
 #include "ElephantShrew.hpp"
@@ -8,7 +10,10 @@ namespace ElephantShrew
 {
 
 void Bootstrapper::Strap()
-{
+{    
+    std::string boost_version = BOOST_LIB_VERSION;
+    spdlog::info("Boost version: {}", boost_version);
+
     builder_ = std::make_shared< Hypodermic::ContainerBuilder >();
 
     builder_->registerType<ElephantShrew>()
@@ -25,7 +30,7 @@ void Bootstrapper::Resolve()
     auto networkIntScanner = container_->resolve< NetworkInterfaceScanner >();
 
     elephantShrew->Init();
-    networkIntScanner->Scan();
+    //networkIntScanner->Scan();
 }
 
 Bootstrapper::~Bootstrapper()
