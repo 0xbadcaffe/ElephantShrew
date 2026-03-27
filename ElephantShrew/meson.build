@@ -4,7 +4,7 @@ project('ElephantShrew',
   default_options : ['cpp_std=c++20','warning_level=3']
 )
 
-#boost_dep = dependency('boost', required: true)
+boost_dep = dependency('boost', required: true)
 openssl = dependency('openssl', required: true)
 spdlog_dep = dependency('spdlog', required: true)
 pcapplusplus_dep = dependency('PcapPlusPlus', required: true)
@@ -23,14 +23,16 @@ sources = [
   #'src/ThreadPool.cpp',
   'src/UdpReceiver.cpp',
   'src/UdpTransmitter.cpp',
-  'src/boost_redis_tester.cpp'
+  'src/boost_redis_tester.cpp',
+  'src/RedisPacketStore.cpp',
+  'src/PcapReceiver.cpp',
 ]
 
 exe = executable(
   'elephantshrew',
   sources,
   include_directories : inc_dirs,
-  dependencies: [openssl,spdlog_dep,pcapplusplus_dep],
+  dependencies: [openssl, spdlog_dep, pcapplusplus_dep, boost_dep],
   cpp_args : ['-DBOOST_ASIO_HAS_CO_AWAIT'],
   install : true)
 

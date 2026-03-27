@@ -1,14 +1,11 @@
 #ifndef _ELEPHENTSHREW_H_
 #define _ELEPHENTSHREW_H_
 
-#include <iostream>
 #include <memory>
+#include <string>
+#include <vector>
 #include "IElephantShrew.hpp"
 #include "IReceiver.hpp"
-#include "ITransmitter.hpp"
-#include "InboundHandler.hpp"
-#include "OutboundHandler.hpp"
-#include "ElephantShrewSuper.hpp"
 
 namespace ElephantShrew {
 
@@ -22,10 +19,13 @@ namespace ElephantShrew {
         explicit ElephantShrew(ElephantShrew&& other) = delete;
         ElephantShrew& operator=(const ElephantShrew&& rhs) = delete;
 
-        virtual void Init() override;
+        virtual void Init(const std::vector<std::string>& ifaces) override;
 
         virtual ~ElephantShrew() = default;
-        
+
+    private:
+        // One receiver per active capture interface.
+        std::vector<std::shared_ptr<IReceiver>> receivers_;
     };
 
 }

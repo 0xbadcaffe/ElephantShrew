@@ -9,6 +9,8 @@
 #define _IELEPHENTSHREW_H_
 
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace ElephantShrew {
 
@@ -17,7 +19,7 @@ class IElephantShrew {
 public :
 
     virtual ~IElephantShrew() = default;
-    virtual void Init() = 0;
+    virtual void Init(const std::vector<std::string>& ifaces) = 0;
 
 };
 

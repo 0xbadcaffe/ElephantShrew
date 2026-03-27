@@ -1,49 +1,32 @@
 #include <spdlog/spdlog.h>
-#include "CommonDefs.hpp"
 #include "ElephantShrew.hpp"
-#include "UdpTransmitter.hpp"
-#include "UdpReceiver.hpp"
+#include "PcapReceiver.hpp"
+#include "RedisPacketStore.hpp"
 
 namespace ElephantShrew
 {
 
-void ElephantShrew::Init()
+void ElephantShrew::Init(const std::vector<std::string>& ifaces)
 {
-
     spdlog::info("ElephantShrew::Init");
 
-	// // Create transmitter according to configuration
-	// std::shared_ptr<IElephantShrewTransmitter> transmitter;
-	// if (USB_TRANSMIT)
-	// 	transmitter = std::make_shared<UsbTransmitter>();
-	// else // udp
-	// 	transmitter = std::make_shared<UdpTransmitter>();
+    // A single store is shared across all capture interfaces so packets from
+    // every interface land in the same DragonFly stream, tagged by iface name.
+    auto store = std::make_shared<RedisPacketStore>();
 
-	// // Create receiver according to configuration
-	// std::shared_ptr<IElephantShrewReceiver> receiver;
-	// if (FILE_RECEIVE)
-	// 	receiver = std::make_shared<FileReceiver>();
-	// else // udp
-	// 	receiver = std::make_shared<UdpReceiver>();
-
-	// // Create ElephantShrew processor unit
-	// auto processor = std::make_shared<ElephantShrewProcessor>();
-
-	// // Create Inbound handler
-	// auto inboundHandler = std::make_shared<ElephantShrewInboundHandler>(receiver);
-
-	// // Create Outbound handler
-	// auto outboundHandler = std::make_shared<ElephantShrewOutboundHandler>(transmitter);
-
-
-	// auto overseer = std::make_shared<ElephantShrewOverseer>(
-	// 										processor,
-	// 										outboundHandler,
-	// 										inboundHandler);
-
-	// return overseer;
+    if (ifaces.empty()) {
+        // No interface specified — auto-select the first available one.
+        auto receiver = std::make_shared<PcapReceiver>(store);
+        receiver->Receive();
+        receivers_.push_back(std::move(receiver));
+    } else {
+        for (const auto& iface : ifaces) {
+            auto receiver = std::make_shared<PcapReceiver>(store, iface);
+            receiver->Receive();
+            receivers_.push_back(std::move(receiver));
+        }
+    }
 }
-
 
 }
 

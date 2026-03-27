@@ -2,6 +2,8 @@
 #define _BOOTSTRAPPER_
 
 #include <Hypodermic/Hypodermic.h>
+#include <string>
+#include <vector>
 
 namespace ElephantShrew
 {
@@ -18,7 +20,7 @@ namespace ElephantShrew
         Bootstrapper& operator=(const Bootstrapper&& rhs) = delete;
 
         void Strap();
-        void Resolve();
+        void Resolve(const std::vector<std::string>& ifaces = {});
 
         virtual ~Bootstrapper();
 

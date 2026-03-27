@@ -1,10 +1,8 @@
 #include <memory>
 #include <boost/version.hpp>
 #include <spdlog/spdlog.h>
-//#include <tbb/flow_graph.h>
 #include "Bootstrapper.hpp"
 #include "ElephantShrew.hpp"
-#include "NetworkInterfaceScanner.hpp"
 
 namespace ElephantShrew
 {
@@ -17,20 +15,15 @@ void Bootstrapper::Strap()
     builder_ = std::make_shared< Hypodermic::ContainerBuilder >();
 
     builder_->registerType<ElephantShrew>()
-        .as<IElephantShrew>(); 
-
-    builder_->registerType<NetworkInterfaceScanner>();
+        .as<IElephantShrew>();
 
     container_ = builder_->build();
 }
 
-void Bootstrapper::Resolve()
+void Bootstrapper::Resolve(const std::vector<std::string>& ifaces)
 {
     auto elephantShrew = container_->resolve< ElephantShrew >();
-    auto networkIntScanner = container_->resolve< NetworkInterfaceScanner >();
-
-    elephantShrew->Init();
-    //networkIntScanner->Scan();
+    elephantShrew->Init(ifaces);
 }
 
 Bootstrapper::~Bootstrapper()
