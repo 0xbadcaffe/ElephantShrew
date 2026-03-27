@@ -21,13 +21,13 @@ void Bootstrapper::Strap()
     container_ = builder_->build();
 }
 
-void Bootstrapper::Resolve(const CaptureOptions& options)
+void Bootstrapper::Resolve(const RuntimeConfig& config)
 {
     if (!container_)
         throw std::runtime_error("Bootstrapper::Resolve called before Strap");
 
     auto elephantShrew = container_->resolve<ElephantShrew>();
-    elephantShrew->Init(options);
+    elephantShrew->Init(config);
     elephantShrew_ = std::move(elephantShrew);
 }
 

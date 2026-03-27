@@ -6,9 +6,11 @@
 namespace ElephantShrew
 {
 
-void ElephantShrew::Init(const CaptureOptions& options)
+void ElephantShrew::Init(const RuntimeConfig& config)
 {
     spdlog::info("ElephantShrew::Init");
+
+    const auto& options = config.capture;
 
     receivers_.clear();
     receivers_.reserve(options.ifaces.empty() ? 1U : options.ifaces.size());
@@ -17,7 +19,7 @@ void ElephantShrew::Init(const CaptureOptions& options)
     if (options.record_packets) {
         // A single store is shared across all capture interfaces so packets from
         // every interface land in the same DragonFly stream, tagged by iface name.
-        store = std::make_shared<RedisPacketStore>();
+        store = std::make_shared<RedisPacketStore>(config.redis);
         spdlog::info("Packet recording enabled");
     } else {
         spdlog::info("Packet recording disabled");

@@ -1,0 +1,22 @@
+{
+  "capture": {
+    "interfaces": [],
+    "record_packets": false,
+    "debug_packets": false
+  },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": "6379",
+    "stream_key": "elephantshrew:packets",
+    "max_pending_writes": 1024,
+    "connect_timeout_ms": 5000,
+    "drain_timeout_ms": 5000
+  },
+  "supervisor": {
+    "restart_delay_ms": 2000,
+    "poll_interval_ms": 200
+  },
+  "ui": {
+    "show_startup_art": true
+  }
+}

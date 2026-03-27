@@ -34,7 +34,7 @@ void ElephantShrewSuper::Stop() {
 
 void ElephantShrewSuper::inboundThreadFunction(void) {
 	//   while (!m_isInboundStopped) {
-	//     std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	//     std::this_thread::sleep_for(configured_poll_interval);
 	//     auto newDataLine = m_ElephantShrewInboundHandler->GetInbound();
 	//     if(NULL != newDataLine){
 	//     	auto newSum = m_processor->Process(newDataLine);
@@ -56,4 +56,3 @@ void ElephantShrewSuper::outboundThreadFunction(void) {
 }
 
 }
-

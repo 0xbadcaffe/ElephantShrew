@@ -20,7 +20,7 @@ namespace ElephantShrew
         Bootstrapper& operator=(const Bootstrapper&& rhs) = delete;
 
         void Strap();
-        void Resolve(const CaptureOptions& options = {});
+        void Resolve(const RuntimeConfig& config = {});
 
         virtual ~Bootstrapper();
 

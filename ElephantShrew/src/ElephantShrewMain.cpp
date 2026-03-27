@@ -2,6 +2,7 @@
 #include <chrono>
 #include <csignal>
 #include <exception>
+#include <optional>
 #include <pcapplusplus/PcapLiveDeviceList.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
@@ -16,13 +17,16 @@ std::atomic<bool> g_stopRequested{false};
 
 struct CliOptions
 {
-    ElephantShrew::CaptureOptions capture;
+    std::optional<std::string> config_path;
+    std::vector<std::string> ifaces;
+    bool record_packets{false};
+    bool debug_packets{false};
     bool scan_only{false};
 };
 
 void PrintUsage(const char* program)
 {
-    std::cout << "Usage: " << program << " [-s] [-r] [-d] [-i <iface>]...\n";
+    std::cout << "Usage: " << program << " [-s] [-r] [-d] [-c <config.json>] [-i <iface>]...\n";
 }
 
 void PrintStartupArt()
@@ -82,13 +86,23 @@ bool ParseArguments(int argc, char* argv[], CliOptions& options)
     for (int i = 1; i < argc; ++i) {
         const std::string arg = argv[i];
 
+        if (arg == "-c") {
+            if (i + 1 >= argc) {
+                spdlog::error("Missing value for '{}'", arg);
+                return false;
+            }
+
+            options.config_path = argv[++i];
+            continue;
+        }
+
         if (arg == "-i") {
             if (i + 1 >= argc) {
                 spdlog::error("Missing value for '{}'", arg);
                 return false;
             }
 
-            options.capture.ifaces.push_back(argv[++i]);
+            options.ifaces.push_back(argv[++i]);
             continue;
         }
 
@@ -98,12 +112,12 @@ bool ParseArguments(int argc, char* argv[], CliOptions& options)
         }
 
         if (arg == "-r") {
-            options.capture.record_packets = true;
+            options.record_packets = true;
             continue;
         }
 
         if (arg == "-d") {
-            options.capture.debug_packets = true;
+            options.debug_packets = true;
             continue;
         }
 
@@ -112,7 +126,7 @@ bool ParseArguments(int argc, char* argv[], CliOptions& options)
     }
 
     if (options.scan_only &&
-        (!options.capture.ifaces.empty() || options.capture.record_packets || options.capture.debug_packets)) {
+        (!options.ifaces.empty() || options.record_packets || options.debug_packets)) {
         spdlog::error("'-s' cannot be combined with capture flags");
         return false;
     }
@@ -120,22 +134,45 @@ bool ParseArguments(int argc, char* argv[], CliOptions& options)
     return true;
 }
 
-void SleepWithStopCheck(std::chrono::milliseconds delay)
+ElephantShrew::RuntimeConfig LoadEffectiveConfig(const CliOptions& options)
 {
-    constexpr auto kSleepSlice = std::chrono::milliseconds(200);
+    ElephantShrew::RuntimeConfig config;
+
+    if (options.config_path)
+        config = ElephantShrew::LoadRuntimeConfigFromJson(*options.config_path);
+
+    if (!options.ifaces.empty())
+        config.capture.ifaces = options.ifaces;
+
+    if (options.record_packets)
+        config.capture.record_packets = true;
+
+    if (options.debug_packets)
+        config.capture.debug_packets = true;
+
+    return config;
+}
+
+void SleepWithStopCheck(std::chrono::milliseconds delay, std::chrono::milliseconds poll_interval)
+{
+    if (poll_interval <= std::chrono::milliseconds::zero())
+        poll_interval = std::chrono::milliseconds(1);
 
     auto remaining = delay;
     while (remaining > std::chrono::milliseconds::zero() && !StopRequested()) {
-        const auto sleepFor = remaining > kSleepSlice ? kSleepSlice : remaining;
+        const auto sleepFor = remaining > poll_interval ? poll_interval : remaining;
         std::this_thread::sleep_for(sleepFor);
         remaining -= sleepFor;
     }
 }
 
-void WaitUntilStopRequested()
+void WaitUntilStopRequested(std::chrono::milliseconds poll_interval)
 {
+    if (poll_interval <= std::chrono::milliseconds::zero())
+        poll_interval = std::chrono::milliseconds(1);
+
     while (!StopRequested())
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(poll_interval);
 }
 
 void LogUnhandledException(const char* context)
@@ -151,23 +188,21 @@ void LogUnhandledException(const char* context)
     }
 }
 
-void RunCaptureService(const CliOptions& options)
+void RunCaptureService(const ElephantShrew::RuntimeConfig& config)
 {
     ElephantShrew::Bootstrapper bootstrapper;
 
     spdlog::info("Try to initialize Bootstrapper");
     bootstrapper.Strap();
-    bootstrapper.Resolve(options.capture);
+    bootstrapper.Resolve(config);
     spdlog::info("Capture service is running. Press Ctrl+C to stop.");
 
-    WaitUntilStopRequested();
+    WaitUntilStopRequested(std::chrono::milliseconds(config.supervisor.poll_interval_ms));
 }
 
 } // namespace
 
 int main(int argc, char *argv[]) {
-    constexpr auto kRestartDelay = std::chrono::seconds(2);
-
     CliOptions options;
 
     InstallSignalHandlers();
@@ -177,7 +212,19 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    PrintStartupArt();
+    ElephantShrew::RuntimeConfig config;
+    try {
+        config = LoadEffectiveConfig(options);
+    }
+    catch (...) {
+        LogUnhandledException("Failed to load runtime config");
+        return 1;
+    }
+
+    spdlog::set_level(config.capture.debug_packets ? spdlog::level::debug : spdlog::level::info);
+
+    if (config.ui.show_startup_art)
+        PrintStartupArt();
 
     if (options.scan_only) {
         try {
@@ -189,13 +236,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    spdlog::set_level(options.capture.debug_packets ? spdlog::level::debug : spdlog::level::info);
+    if (options.config_path)
+        spdlog::info("Loaded runtime config from '{}'", *options.config_path);
 
     spdlog::info("Hello world ElephantShrew");
 
     while (!StopRequested()) {
         try {
-            RunCaptureService(options);
+            RunCaptureService(config);
         }
         catch (...) {
             LogUnhandledException("Capture service crashed");
@@ -204,8 +252,10 @@ int main(int argc, char *argv[]) {
         if (StopRequested())
             break;
 
-        spdlog::warn("Capture service stopped unexpectedly. Restarting in {} seconds...", kRestartDelay.count());
-        SleepWithStopCheck(std::chrono::duration_cast<std::chrono::milliseconds>(kRestartDelay));
+        const auto restart_delay = std::chrono::milliseconds(config.supervisor.restart_delay_ms);
+        const auto poll_interval = std::chrono::milliseconds(config.supervisor.poll_interval_ms);
+        spdlog::warn("Capture service stopped unexpectedly. Restarting in {} ms...", restart_delay.count());
+        SleepWithStopCheck(restart_delay, poll_interval);
     }
 
     spdlog::info("Shutdown requested. Exiting ElephantShrew.");

@@ -9,15 +9,30 @@
 #include <exception>
 #include <future>
 #include <stdexcept>
+#include <utility>
 
 namespace ElephantShrew {
 
-RedisPacketStore::RedisPacketStore(const std::string& host, const std::string& port)
-    : conn_(ioc_)
+RedisPacketStore::RedisPacketStore(RedisStoreOptions options)
+    : conn_(ioc_),
+      options_(std::move(options))
 {
+    if (options_.host.empty())
+        throw std::runtime_error("RedisPacketStore: host must not be empty");
+    if (options_.port.empty())
+        throw std::runtime_error("RedisPacketStore: port must not be empty");
+    if (options_.stream_key.empty())
+        throw std::runtime_error("RedisPacketStore: stream_key must not be empty");
+    if (options_.max_pending_writes == 0)
+        throw std::runtime_error("RedisPacketStore: max_pending_writes must be greater than 0");
+    if (options_.connect_timeout_ms == 0)
+        throw std::runtime_error("RedisPacketStore: connect_timeout_ms must be greater than 0");
+    if (options_.drain_timeout_ms == 0)
+        throw std::runtime_error("RedisPacketStore: drain_timeout_ms must be greater than 0");
+
     boost::redis::config cfg;
-    cfg.addr.host = host;
-    cfg.addr.port = port;
+    cfg.addr.host = options_.host;
+    cfg.addr.port = options_.port;
 
     // Schedule async_run on the ioc before starting the thread so ioc_.run()
     // finds work immediately and does not return prematurely.
@@ -25,11 +40,11 @@ RedisPacketStore::RedisPacketStore(const std::string& host, const std::string& p
 
     io_thread_ = std::thread([this] { ioc_.run(); });
 
-    spdlog::info("RedisPacketStore connecting to {}:{}", host, port);
+    spdlog::info("RedisPacketStore connecting to {}:{}", options_.host, options_.port);
 
     try {
-        ValidateConnection(host, port);
-        spdlog::info("RedisPacketStore connected to {}:{}", host, port);
+        ValidateConnection(std::chrono::milliseconds(options_.connect_timeout_ms));
+        spdlog::info("RedisPacketStore connected to {}:{}", options_.host, options_.port);
     }
     catch (...) {
         conn_.cancel();
@@ -47,7 +62,7 @@ RedisPacketStore::~RedisPacketStore()
         accepting_writes_ = false;
     }
     pending_cv_.notify_all();
-    WaitForPendingWrites();
+    WaitForPendingWrites(std::chrono::milliseconds(options_.drain_timeout_ms));
 
     conn_.cancel();
     ioc_.stop();
@@ -68,7 +83,7 @@ void RedisPacketStore::Store(const PacketInfo& packet)
                 auto req  = std::make_shared<boost::redis::request>();
                 auto resp = std::make_shared<boost::redis::response<std::string>>();
 
-                req->push("XADD", stream_key_, "*",
+                req->push("XADD", options_.stream_key, "*",
                     "iface",        packet.iface,
                     "src_ip",       packet.src_ip,
                     "dst_ip",       packet.dst_ip,
@@ -106,25 +121,24 @@ void RedisPacketStore::Store(const PacketInfo& packet)
     }
 }
 
-void RedisPacketStore::ValidateConnection(const std::string& host,
-                                          const std::string& port,
-                                          std::chrono::milliseconds timeout)
+void RedisPacketStore::ValidateConnection(std::chrono::milliseconds timeout)
 {
     auto ready = std::make_shared<std::promise<void>>();
     auto future = ready->get_future();
 
-    boost::asio::post(ioc_, [this, ready, host, port] {
+    boost::asio::post(ioc_, [this, ready] {
         try {
             auto req  = std::make_shared<boost::redis::request>();
             auto resp = std::make_shared<boost::redis::response<std::string>>();
 
             req->push("PING");
             conn_.async_exec(*req, *resp,
-                [ready, req, resp, host, port](boost::system::error_code ec, std::size_t) {
+                [this, ready, req, resp](boost::system::error_code ec, std::size_t) {
                     try {
                         if (ec) {
                             throw std::runtime_error(
-                                "RedisPacketStore failed to connect to " + host + ":" + port + ": " + ec.message()
+                                "RedisPacketStore failed to connect to " + options_.host + ":" +
+                                options_.port + ": " + ec.message()
                             );
                         }
 
@@ -147,7 +161,7 @@ void RedisPacketStore::ValidateConnection(const std::string& host,
 
     if (future.wait_for(timeout) != std::future_status::ready) {
         throw std::runtime_error(
-            "RedisPacketStore timed out connecting to " + host + ":" + port
+            "RedisPacketStore timed out connecting to " + options_.host + ":" + options_.port
         );
     }
 
@@ -158,7 +172,7 @@ bool RedisPacketStore::ReservePendingWriteSlot()
 {
     std::unique_lock<std::mutex> lock(pending_mutex_);
     pending_cv_.wait(lock, [this] {
-        return pending_writes_ < max_pending_writes_ || !accepting_writes_;
+        return pending_writes_ < options_.max_pending_writes || !accepting_writes_;
     });
 
     if (!accepting_writes_)

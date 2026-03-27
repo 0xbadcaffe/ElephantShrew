@@ -15,6 +15,7 @@ sources = [
   'src/ElephantShrewMain.cpp',
   'src/Bootstrapper.cpp',
   'src/ElephantShrew.cpp',
+  'src/RuntimeConfig.cpp',
   #'src/NetworkInterfaceScanner.cpp',
   'src/DataProcessor.cpp',
   'src/InboundHandler.cpp',
