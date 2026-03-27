@@ -6,22 +6,37 @@
 namespace ElephantShrew
 {
 
-void ElephantShrew::Init(const std::vector<std::string>& ifaces)
+void ElephantShrew::Init(const CaptureOptions& options)
 {
     spdlog::info("ElephantShrew::Init");
 
-    // A single store is shared across all capture interfaces so packets from
-    // every interface land in the same DragonFly stream, tagged by iface name.
-    auto store = std::make_shared<RedisPacketStore>();
+    receivers_.clear();
+    receivers_.reserve(options.ifaces.empty() ? 1U : options.ifaces.size());
 
-    if (ifaces.empty()) {
+    std::shared_ptr<IPacketStore> store;
+    if (options.record_packets) {
+        // A single store is shared across all capture interfaces so packets from
+        // every interface land in the same DragonFly stream, tagged by iface name.
+        store = std::make_shared<RedisPacketStore>();
+        spdlog::info("Packet recording enabled");
+    } else {
+        spdlog::info("Packet recording disabled");
+    }
+
+    if (options.debug_packets)
+        spdlog::info("Packet debug logging enabled");
+
+    if (!options.record_packets && !options.debug_packets)
+        spdlog::warn("Packets will be captured but neither recorded nor logged");
+
+    if (options.ifaces.empty()) {
         // No interface specified — auto-select the first available one.
-        auto receiver = std::make_shared<PcapReceiver>(store);
+        auto receiver = std::make_shared<PcapReceiver>(store, "", options.record_packets, options.debug_packets);
         receiver->Receive();
         receivers_.push_back(std::move(receiver));
     } else {
-        for (const auto& iface : ifaces) {
-            auto receiver = std::make_shared<PcapReceiver>(store, iface);
+        for (const auto& iface : options.ifaces) {
+            auto receiver = std::make_shared<PcapReceiver>(store, iface, options.record_packets, options.debug_packets);
             receiver->Receive();
             receivers_.push_back(std::move(receiver));
         }
@@ -29,4 +44,3 @@ void ElephantShrew::Init(const std::vector<std::string>& ifaces)
 }
 
 }
-

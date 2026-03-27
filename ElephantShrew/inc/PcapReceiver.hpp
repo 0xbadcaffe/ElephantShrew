@@ -13,7 +13,9 @@ namespace ElephantShrew {
 class PcapReceiver : public IReceiver {
 public:
     explicit PcapReceiver(std::shared_ptr<IPacketStore> store,
-                          const std::string& iface = "");
+                          const std::string& iface = "",
+                          bool record_packets = false,
+                          bool debug_packets = false);
     ~PcapReceiver() override;
 
     // Starts live capture on the configured interface (non-blocking).
@@ -31,6 +33,8 @@ private:
     std::shared_ptr<IPacketStore> store_;
     pcpp::PcapLiveDevice*         device_{nullptr};
     std::string                   iface_;
+    bool                          record_packets_{false};
+    bool                          debug_packets_{false};
     std::atomic<bool>             capturing_{false};
 };
 

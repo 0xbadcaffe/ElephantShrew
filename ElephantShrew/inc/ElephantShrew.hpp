@@ -19,7 +19,7 @@ namespace ElephantShrew {
         explicit ElephantShrew(ElephantShrew&& other) = delete;
         ElephantShrew& operator=(const ElephantShrew&& rhs) = delete;
 
-        virtual void Init(const std::vector<std::string>& ifaces) override;
+        virtual void Init(const CaptureOptions& options) override;
 
         virtual ~ElephantShrew() = default;
 

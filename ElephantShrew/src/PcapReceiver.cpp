@@ -8,11 +8,18 @@
 #include <chrono>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
 
 namespace ElephantShrew {
 
-PcapReceiver::PcapReceiver(std::shared_ptr<IPacketStore> store, const std::string& iface)
-    : store_(std::move(store)), iface_(iface)
+PcapReceiver::PcapReceiver(std::shared_ptr<IPacketStore> store,
+                           const std::string& iface,
+                           bool record_packets,
+                           bool debug_packets)
+    : store_(std::move(store)),
+      iface_(iface),
+      record_packets_(record_packets),
+      debug_packets_(debug_packets)
 {
 }
 
@@ -26,27 +33,26 @@ void PcapReceiver::Receive()
     if (iface_.empty()) {
         const auto& devList = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
         if (devList.empty()) {
-            spdlog::error("PcapReceiver: no network interfaces found");
-            return;
+            throw std::runtime_error("PcapReceiver: no network interfaces found");
         }
         device_ = devList.front();
         spdlog::info("PcapReceiver: auto-selected interface '{}'", device_->getName());
     } else {
         device_ = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(iface_);
-        if (!device_) {
-            spdlog::error("PcapReceiver: interface '{}' not found", iface_);
-            return;
-        }
+        if (!device_)
+            throw std::runtime_error("PcapReceiver: interface '" + iface_ + "' not found");
     }
 
-    if (!device_->open()) {
-        spdlog::error("PcapReceiver: failed to open interface '{}'", device_->getName());
-        return;
-    }
+    if (!device_->open())
+        throw std::runtime_error("PcapReceiver: failed to open interface '" + device_->getName() + "'");
 
     spdlog::info("PcapReceiver: starting capture on '{}'", device_->getName());
+    if (!device_->startCapture(onPacketArrives, this)) {
+        device_->close();
+        throw std::runtime_error("PcapReceiver: failed to start capture on '" + device_->getName() + "'");
+    }
+
     capturing_ = true;
-    device_->startCapture(onPacketArrives, this);
 }
 
 void PcapReceiver::Stop()
@@ -63,7 +69,19 @@ void PcapReceiver::onPacketArrives(pcpp::RawPacket* packet,
                                    pcpp::PcapLiveDevice* /*dev*/,
                                    void* cookie)
 {
-    static_cast<PcapReceiver*>(cookie)->processPacket(packet);
+    auto* receiver = static_cast<PcapReceiver*>(cookie);
+
+    try {
+        receiver->processPacket(packet);
+    }
+    catch (const std::exception& e) {
+        const auto iface = receiver->device_ ? receiver->device_->getName() : std::string("unknown");
+        spdlog::error("PcapReceiver: exception while processing packet on '{}': {}", iface, e.what());
+    }
+    catch (...) {
+        const auto iface = receiver->device_ ? receiver->device_->getName() : std::string("unknown");
+        spdlog::error("PcapReceiver: unknown exception while processing packet on '{}'", iface);
+    }
 }
 
 void PcapReceiver::processPacket(pcpp::RawPacket* rawPacket)
@@ -101,7 +119,22 @@ void PcapReceiver::processPacket(pcpp::RawPacket* rawPacket)
     else
         info.protocol = "OTHER";
 
-    // Hex-encode the raw packet bytes
+    if (debug_packets_) {
+        spdlog::debug("PcapReceiver: packet on '{}' {} -> {} proto={} len={}",
+                      info.iface,
+                      info.src_ip,
+                      info.dst_ip,
+                      info.protocol,
+                      info.length);
+    }
+
+    if (!record_packets_)
+        return;
+
+    if (!store_)
+        throw std::runtime_error("PcapReceiver: packet recording enabled without a packet store");
+
+    // Hex-encode the raw packet bytes only when recording is enabled.
     const uint8_t* data = rawPacket->getRawData();
     std::ostringstream oss;
     oss << std::hex << std::setfill('0');

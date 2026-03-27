@@ -1,4 +1,5 @@
 #include <memory>
+#include <stdexcept>
 #include <boost/version.hpp>
 #include <spdlog/spdlog.h>
 #include "Bootstrapper.hpp"
@@ -20,15 +21,21 @@ void Bootstrapper::Strap()
     container_ = builder_->build();
 }
 
-void Bootstrapper::Resolve(const std::vector<std::string>& ifaces)
+void Bootstrapper::Resolve(const CaptureOptions& options)
 {
-    auto elephantShrew = container_->resolve< ElephantShrew >();
-    elephantShrew->Init(ifaces);
+    if (!container_)
+        throw std::runtime_error("Bootstrapper::Resolve called before Strap");
+
+    auto elephantShrew = container_->resolve<ElephantShrew>();
+    elephantShrew->Init(options);
+    elephantShrew_ = std::move(elephantShrew);
 }
 
 Bootstrapper::~Bootstrapper()
 {
-    //TODO clear IOC container
+    elephantShrew_.reset();
+    container_.reset();
+    builder_.reset();
 }
 
 }

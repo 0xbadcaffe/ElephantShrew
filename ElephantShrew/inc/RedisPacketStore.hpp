@@ -2,8 +2,9 @@
 #define _REDISPACKETSTORE_H_
 
 #include "IPacketStore.hpp"
-#include <boost/redis/connection.hpp>
 #include <boost/asio/io_context.hpp>
+#include <boost/redis/connection.hpp>
+#include <chrono>
 #include <thread>
 #include <string>
 
@@ -18,6 +19,10 @@ public:
     void Store(const PacketInfo& packet) override;
 
 private:
+    void ValidateConnection(const std::string& host,
+                            const std::string& port,
+                            std::chrono::milliseconds timeout = std::chrono::seconds(5));
+
     boost::asio::io_context    ioc_;
     boost::redis::connection   conn_;
     std::thread                io_thread_;

@@ -14,12 +14,18 @@
 
 namespace ElephantShrew {
 
+struct CaptureOptions {
+    std::vector<std::string> ifaces;
+    bool record_packets{false};
+    bool debug_packets{false};
+};
+
 class IElephantShrew {
 
 public :
 
     virtual ~IElephantShrew() = default;
-    virtual void Init(const std::vector<std::string>& ifaces) = 0;
+    virtual void Init(const CaptureOptions& options) = 0;
 
 };
 

@@ -2,11 +2,11 @@
 #define _BOOTSTRAPPER_
 
 #include <Hypodermic/Hypodermic.h>
-#include <string>
-#include <vector>
+#include "IElephantShrew.hpp"
 
 namespace ElephantShrew
 {
+    class ElephantShrew;
 
     class Bootstrapper
     {
@@ -20,13 +20,14 @@ namespace ElephantShrew
         Bootstrapper& operator=(const Bootstrapper&& rhs) = delete;
 
         void Strap();
-        void Resolve(const std::vector<std::string>& ifaces = {});
+        void Resolve(const CaptureOptions& options = {});
 
         virtual ~Bootstrapper();
 
     private:
         std::shared_ptr<Hypodermic::ContainerBuilder> builder_;
         std::shared_ptr<Hypodermic::Container>        container_;
+        std::shared_ptr<ElephantShrew>                elephantShrew_;
 
     };
 
