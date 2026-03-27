@@ -42,6 +42,13 @@ RedisPacketStore::RedisPacketStore(const std::string& host, const std::string& p
 
 RedisPacketStore::~RedisPacketStore()
 {
+    {
+        std::lock_guard<std::mutex> lock(pending_mutex_);
+        accepting_writes_ = false;
+    }
+    pending_cv_.notify_all();
+    WaitForPendingWrites();
+
     conn_.cancel();
     ioc_.stop();
     if (io_thread_.joinable())
@@ -50,6 +57,11 @@ RedisPacketStore::~RedisPacketStore()
 
 void RedisPacketStore::Store(const PacketInfo& packet)
 {
+    if (!ReservePendingWriteSlot()) {
+        spdlog::warn("RedisPacketStore: dropping packet while store is shutting down");
+        return;
+    }
+
     try {
         boost::asio::post(ioc_, [this, packet] {
             try {
@@ -67,25 +79,30 @@ void RedisPacketStore::Store(const PacketInfo& packet)
                 );
 
                 conn_.async_exec(*req, *resp,
-                    [req, resp](boost::system::error_code ec, std::size_t) {
+                    [this, req, resp](boost::system::error_code ec, std::size_t) {
                         if (ec)
                             spdlog::error("Redis XADD failed: {}", ec.message());
+                        CompletePendingWrite();
                     }
                 );
             }
             catch (const std::exception& e) {
                 spdlog::error("RedisPacketStore::Store failed: {}", e.what());
+                CompletePendingWrite();
             }
             catch (...) {
                 spdlog::error("RedisPacketStore::Store failed with unknown exception");
+                CompletePendingWrite();
             }
         });
     }
     catch (const std::exception& e) {
         spdlog::error("RedisPacketStore::Store post failed: {}", e.what());
+        CompletePendingWrite();
     }
     catch (...) {
         spdlog::error("RedisPacketStore::Store post failed with unknown exception");
+        CompletePendingWrite();
     }
 }
 
@@ -135,6 +152,43 @@ void RedisPacketStore::ValidateConnection(const std::string& host,
     }
 
     future.get();
+}
+
+bool RedisPacketStore::ReservePendingWriteSlot()
+{
+    std::unique_lock<std::mutex> lock(pending_mutex_);
+    pending_cv_.wait(lock, [this] {
+        return pending_writes_ < max_pending_writes_ || !accepting_writes_;
+    });
+
+    if (!accepting_writes_)
+        return false;
+
+    ++pending_writes_;
+    return true;
+}
+
+void RedisPacketStore::CompletePendingWrite()
+{
+    {
+        std::lock_guard<std::mutex> lock(pending_mutex_);
+        if (pending_writes_ > 0)
+            --pending_writes_;
+    }
+    pending_cv_.notify_all();
+}
+
+void RedisPacketStore::WaitForPendingWrites(std::chrono::milliseconds timeout)
+{
+    std::unique_lock<std::mutex> lock(pending_mutex_);
+    const bool drained = pending_cv_.wait_for(lock, timeout, [this] {
+        return pending_writes_ == 0;
+    });
+
+    if (!drained) {
+        spdlog::warn("RedisPacketStore: timed out draining {} pending writes during shutdown",
+                     pending_writes_);
+    }
 }
 
 } // namespace ElephantShrew

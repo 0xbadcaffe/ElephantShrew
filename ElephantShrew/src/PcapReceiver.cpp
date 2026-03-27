@@ -91,11 +91,9 @@ void PcapReceiver::processPacket(pcpp::RawPacket* rawPacket)
     PacketInfo info;
     info.iface  = device_->getName();
     info.length = static_cast<uint32_t>(rawPacket->getRawDataLen());
-    info.timestamp_us = static_cast<uint64_t>(
-        std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-        ).count()
-    );
+    const auto packet_timestamp = rawPacket->getPacketTimeStamp();
+    info.timestamp_us = static_cast<uint64_t>(packet_timestamp.tv_sec) * 1000000ULL +
+                        static_cast<uint64_t>(packet_timestamp.tv_nsec / 1000);
 
     // Network layer — extract source/destination addresses
     if (auto* ip4 = parsed.getLayerOfType<pcpp::IPv4Layer>()) {
