@@ -33,6 +33,9 @@ optional bidirectional forwarding.
 - PcapPlusPlus
 - `nlohmann/json.hpp`
 - Redis or DragonFly listening on `127.0.0.1:6379` when using `-r`
+- `clang-tidy` for Clang static analysis reports
+- `cppcheck` for standalone static analysis reports
+- `valgrind` for runtime leak reports
 
 ## Build
 
@@ -42,6 +45,34 @@ Run the build from the project root:
 meson setup builddir
 meson compile -C builddir
 ```
+
+### Build Profiles
+
+Meson build profiles are scripted under `scripts/setup_build.sh` and create
+separate build directories per compiler/profile:
+
+```bash
+./scripts/setup_build.sh gcc debug
+meson compile -C build/debug-gcc
+
+./scripts/setup_build.sh gcc release
+meson compile -C build/release-gcc
+
+./scripts/setup_build.sh clang debug
+meson compile -C build/debug-clang
+
+./scripts/setup_build.sh clang release
+meson compile -C build/release-clang
+```
+
+Release builds enable:
+
+- `buildtype=release`
+- `optimization=3`
+- `b_lto=true`
+- `b_ndebug=true`
+- `strip=true`
+- host-specific `-march=native -mtune=native -fomit-frame-pointer`
 
 The binary will be created at:
 
@@ -54,6 +85,51 @@ The default runtime config lives at:
 ```bash
 ./elephantshrew.json
 ```
+
+## Tooling
+
+Install the analysis tools:
+
+```bash
+sudo apt-get install -y cppcheck clang-tidy valgrind
+```
+
+Generate a `clang-tidy` report from the Clang debug build:
+
+```bash
+./scripts/setup_build.sh clang debug
+meson compile -C build/debug-clang
+./scripts/run_clang_tidy.sh "$(pwd)" "$(pwd)/build/debug-clang" "$(pwd)/reports/clang-tidy"
+```
+
+Generate a `cppcheck` report:
+
+```bash
+sudo apt-get install -y cppcheck
+./scripts/setup_build.sh gcc debug
+meson compile -C build/debug-gcc
+./scripts/run_cppcheck.sh "$(pwd)" "$(pwd)/build/debug-gcc" "$(pwd)/reports/cppcheck"
+```
+
+Generate a Valgrind leak report:
+
+```bash
+./scripts/setup_build.sh gcc debug
+meson compile -C build/debug-gcc
+./scripts/run_valgrind.sh "$(pwd)/build/debug-gcc" "$(pwd)/reports/valgrind" -s
+```
+
+VS Code tasks are included for:
+
+- GCC debug/release builds
+- Clang debug/release builds
+- `clang-tidy` reports
+- `cppcheck` reports
+- Valgrind leak reports
+- package installation tasks for `cppcheck`, `clang-tidy`, and `valgrind`
+
+VS Code launch configurations are included for both GCC and Clang debug
+binaries and pre-build the selected debug target before launching.
 
 ## Run
 

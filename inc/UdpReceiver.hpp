@@ -17,10 +17,6 @@ namespace ElephantShrew {
 
         virtual void Receive() override;
 
-    private:
-
-        uint32_t m_receivedLines = 0;
-
     };
 
 }

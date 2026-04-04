@@ -1,18 +1,233 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-        {
-            "type": "meson",
-            "target": "elephantshrew:executable",
-            "mode": "build",
-            "problemMatcher": [
-                "$meson-gcc"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "label": "Meson: Build elephantshrew:executable"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup debug-gcc",
+      "type": "shell",
+      "command": "./scripts/setup_build.sh",
+      "args": [
+        "gcc",
+        "debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build debug-gcc",
+      "type": "shell",
+      "command": "meson",
+      "args": [
+        "compile",
+        "-C",
+        "build/debug-gcc"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Setup debug-gcc",
+      "dependsOrder": "sequence",
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Setup release-gcc",
+      "type": "shell",
+      "command": "./scripts/setup_build.sh",
+      "args": [
+        "gcc",
+        "release"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build release-gcc",
+      "type": "shell",
+      "command": "meson",
+      "args": [
+        "compile",
+        "-C",
+        "build/release-gcc"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Setup release-gcc",
+      "dependsOrder": "sequence",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Setup debug-clang",
+      "type": "shell",
+      "command": "./scripts/setup_build.sh",
+      "args": [
+        "clang",
+        "debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build debug-clang",
+      "type": "shell",
+      "command": "meson",
+      "args": [
+        "compile",
+        "-C",
+        "build/debug-clang"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Setup debug-clang",
+      "dependsOrder": "sequence",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Setup release-clang",
+      "type": "shell",
+      "command": "./scripts/setup_build.sh",
+      "args": [
+        "clang",
+        "release"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build release-clang",
+      "type": "shell",
+      "command": "meson",
+      "args": [
+        "compile",
+        "-C",
+        "build/release-clang"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Setup release-clang",
+      "dependsOrder": "sequence",
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Install cppcheck",
+      "type": "shell",
+      "command": "sudo",
+      "args": [
+        "apt-get",
+        "install",
+        "-y",
+        "cppcheck"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install clang-tidy",
+      "type": "shell",
+      "command": "sudo",
+      "args": [
+        "apt-get",
+        "install",
+        "-y",
+        "clang-tidy"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Install valgrind",
+      "type": "shell",
+      "command": "sudo",
+      "args": [
+        "apt-get",
+        "install",
+        "-y",
+        "valgrind"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run clang-tidy report",
+      "type": "shell",
+      "command": "./scripts/run_clang_tidy.sh",
+      "args": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/build/debug-clang",
+        "${workspaceFolder}/reports/clang-tidy"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Build debug-clang",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run cppcheck report",
+      "type": "shell",
+      "command": "./scripts/run_cppcheck.sh",
+      "args": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/build/debug-gcc",
+        "${workspaceFolder}/reports/cppcheck"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Build debug-gcc",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run valgrind leak report",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "./scripts/run_valgrind.sh \"${workspaceFolder}/build/debug-gcc\" \"${workspaceFolder}/reports/valgrind\" ${input:elephantshrewArgs}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": "Build debug-gcc",
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "elephantshrewArgs",
+      "type": "promptString",
+      "description": "Arguments to pass to elephantshrew under valgrind",
+      "default": "-s"
+    }
+  ]
 }

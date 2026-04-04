@@ -1,0 +1,6 @@
+option(
+  'native_optimizations',
+  type : 'boolean',
+  value : false,
+  description : 'Enable host-specific optimization flags such as -march=native for release builds',
+)

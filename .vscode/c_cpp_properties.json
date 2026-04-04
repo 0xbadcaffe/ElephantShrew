@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "linux-gcc-x64",
+            "name": "linux-gcc-debug",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/int/",
@@ -15,7 +15,26 @@
             "intelliSenseMode": "linux-gcc-x64",
             "compilerArgs": [
                 ""
-            ]
+            ],
+            "compileCommands": "${workspaceFolder}/build/debug-gcc/compile_commands.json"
+        },
+        {
+            "name": "linux-clang-debug",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/int/",
+                "${workspaceFolder}/inc/",
+                "/usr/local/include/",
+                "/opt/include/"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "${default}",
+            "cppStandard": "${default}",
+            "intelliSenseMode": "linux-clang-x64",
+            "compilerArgs": [
+                ""
+            ],
+            "compileCommands": "${workspaceFolder}/build/debug-clang/compile_commands.json"
         }
     ],
     "version": 4

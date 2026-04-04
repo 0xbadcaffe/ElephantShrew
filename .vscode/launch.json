@@ -2,20 +2,77 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C/C++ Runner: Debug Session",
+      "name": "Debug GCC (-s)",
       "type": "cppdbg",
       "request": "launch",
-      "args": [],
+      "preLaunchTask": "Build debug-gcc",
+      "args": [
+        "-s"
+      ],
       "stopAtEntry": false,
       "externalConsole": false,
       "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/builddir/elephantshrew",
+      "program": "${workspaceFolder}/build/debug-gcc/elephantshrew",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/usr/local/lib:${env:LD_LIBRARY_PATH}"
+        }
+      ],
+      "additionalSOLibSearchPath": "/usr/local/lib:/usr/lib:/usr/lib/x86_64-linux-gnu",
+      "symbolLoadInfo": {
+        "loadAll": true,
+        "exceptionList": ""
+      },
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
           "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Load shared library symbols automatically",
+          "text": "set auto-solib-add on",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Debug Clang (-s)",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "Build debug-clang",
+      "args": [
+        "-s"
+      ],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/debug-clang/elephantshrew",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/usr/local/lib:${env:LD_LIBRARY_PATH}"
+        }
+      ],
+      "additionalSOLibSearchPath": "/usr/local/lib:/usr/lib:/usr/lib/x86_64-linux-gnu",
+      "symbolLoadInfo": {
+        "loadAll": true,
+        "exceptionList": ""
+      },
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Load shared library symbols automatically",
+          "text": "set auto-solib-add on",
           "ignoreFailures": true
         }
       ]

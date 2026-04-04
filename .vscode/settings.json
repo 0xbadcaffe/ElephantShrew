@@ -38,6 +38,6 @@
     "future": "cpp",
     "condition_variable": "cpp"
   },
-  "C_Cpp.default.compileCommands": "${workspaceFolder}/builddir/compile_commands.json",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/debug-gcc/compile_commands.json",
   "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild"
 }
