@@ -4,6 +4,12 @@
     "record_packets": false,
     "debug_packets": false
   },
+  "routing": {
+    "enabled": false,
+    "ingress_iface": "eth0",
+    "egress_iface": "eth1",
+    "bidirectional": false
+  },
   "redis": {
     "host": "127.0.0.1",
     "port": "6379",

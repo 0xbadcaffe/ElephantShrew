@@ -4,8 +4,8 @@
             "name": "linux-gcc-x64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/ElephantShrew/int/",
-                "${workspaceFolder}/ElephantShrew/inc/",
+                "${workspaceFolder}/int/",
+                "${workspaceFolder}/inc/",
                 "/usr/local/include/",
                 "/opt/include/"
             ],

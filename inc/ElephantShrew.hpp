@@ -7,6 +7,10 @@
 #include "IElephantShrew.hpp"
 #include "IReceiver.hpp"
 
+namespace pcpp {
+class PcapLiveDevice;
+}
+
 namespace ElephantShrew {
 
     class ElephantShrew : public IElephantShrew {
@@ -21,11 +25,14 @@ namespace ElephantShrew {
 
         virtual void Init(const RuntimeConfig& config) override;
 
-        virtual ~ElephantShrew() = default;
+        virtual ~ElephantShrew() override;
 
     private:
+        void CloseDevices() noexcept;
+
         // One receiver per active capture interface.
         std::vector<std::shared_ptr<IReceiver>> receivers_;
+        std::vector<pcpp::PcapLiveDevice*> opened_devices_;
     };
 
 }

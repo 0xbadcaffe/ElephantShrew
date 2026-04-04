@@ -1,9 +1,9 @@
 #include "PcapReceiver.hpp"
+#include <pcapplusplus/ArpLayer.h>
 #include <pcapplusplus/EthLayer.h>
 #include <pcapplusplus/IPv4Layer.h>
 #include <pcapplusplus/IPv6Layer.h>
 #include <pcapplusplus/Packet.h>
-#include <pcapplusplus/PcapLiveDeviceList.h>
 #include <spdlog/spdlog.h>
 #include <chrono>
 #include <iomanip>
@@ -13,11 +13,13 @@
 namespace ElephantShrew {
 
 PcapReceiver::PcapReceiver(std::shared_ptr<IPacketStore> store,
-                           const std::string& iface,
+                           pcpp::PcapLiveDevice* device,
+                           pcpp::PcapLiveDevice* route_device,
                            bool record_packets,
                            bool debug_packets)
     : store_(std::move(store)),
-      iface_(iface),
+      device_(device),
+      route_device_(route_device),
       record_packets_(record_packets),
       debug_packets_(debug_packets)
 {
@@ -30,25 +32,25 @@ PcapReceiver::~PcapReceiver()
 
 void PcapReceiver::Receive()
 {
-    if (iface_.empty()) {
-        const auto& devList = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDevicesList();
-        if (devList.empty()) {
-            throw std::runtime_error("PcapReceiver: no network interfaces found");
-        }
-        device_ = devList.front();
-        spdlog::info("PcapReceiver: auto-selected interface '{}'", device_->getName());
-    } else {
-        device_ = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByName(iface_);
-        if (!device_)
-            throw std::runtime_error("PcapReceiver: interface '" + iface_ + "' not found");
+    if (!device_)
+        throw std::runtime_error("PcapReceiver: capture device is not set");
+    if (!device_->isOpened())
+        throw std::runtime_error("PcapReceiver: capture device '" + device_->getName() + "' is not open");
+    if (route_device_ && !route_device_->isOpened()) {
+        throw std::runtime_error(
+            "PcapReceiver: route device '" + route_device_->getName() + "' is not open"
+        );
     }
 
-    if (!device_->open())
-        throw std::runtime_error("PcapReceiver: failed to open interface '" + device_->getName() + "'");
+    if (route_device_) {
+        spdlog::info("PcapReceiver: starting capture on '{}' and forwarding to '{}'",
+                     device_->getName(),
+                     route_device_->getName());
+    } else {
+        spdlog::info("PcapReceiver: starting capture on '{}'", device_->getName());
+    }
 
-    spdlog::info("PcapReceiver: starting capture on '{}'", device_->getName());
     if (!device_->startCapture(onPacketArrives, this)) {
-        device_->close();
         throw std::runtime_error("PcapReceiver: failed to start capture on '" + device_->getName() + "'");
     }
 
@@ -59,9 +61,8 @@ void PcapReceiver::Stop()
 {
     if (device_ && capturing_) {
         device_->stopCapture();
-        device_->close();
         capturing_ = false;
-        spdlog::info("PcapReceiver: capture stopped");
+        spdlog::info("PcapReceiver: capture stopped on '{}'", device_->getName());
     }
 }
 
@@ -102,13 +103,18 @@ void PcapReceiver::processPacket(pcpp::RawPacket* rawPacket)
     } else if (auto* ip6 = parsed.getLayerOfType<pcpp::IPv6Layer>()) {
         info.src_ip = ip6->getSrcIPAddress().toString();
         info.dst_ip = ip6->getDstIPAddress().toString();
+    } else if (auto* arp = parsed.getLayerOfType<pcpp::ArpLayer>()) {
+        info.src_ip = arp->getSenderIpAddr().toString();
+        info.dst_ip = arp->getTargetIpAddr().toString();
     } else {
         info.src_ip = "N/A";
         info.dst_ip = "N/A";
     }
 
     // Transport layer — determine protocol name
-    if (parsed.isPacketOfType(pcpp::TCP))
+    if (parsed.isPacketOfType(pcpp::ARP))
+        info.protocol = "ARP";
+    else if (parsed.isPacketOfType(pcpp::TCP))
         info.protocol = "TCP";
     else if (parsed.isPacketOfType(pcpp::UDP))
         info.protocol = "UDP";
@@ -118,12 +124,31 @@ void PcapReceiver::processPacket(pcpp::RawPacket* rawPacket)
         info.protocol = "OTHER";
 
     if (debug_packets_) {
-        spdlog::debug("PcapReceiver: packet on '{}' {} -> {} proto={} len={}",
-                      info.iface,
-                      info.src_ip,
-                      info.dst_ip,
-                      info.protocol,
-                      info.length);
+        if (route_device_) {
+            spdlog::debug("PcapReceiver: packet on '{}' {} -> {} proto={} len={} routed_to='{}'",
+                          info.iface,
+                          info.src_ip,
+                          info.dst_ip,
+                          info.protocol,
+                          info.length,
+                          route_device_->getName());
+        } else {
+            spdlog::debug("PcapReceiver: packet on '{}' {} -> {} proto={} len={}",
+                          info.iface,
+                          info.src_ip,
+                          info.dst_ip,
+                          info.protocol,
+                          info.length);
+        }
+    }
+
+    if (route_device_) {
+        if (!route_device_->sendPacket(*rawPacket)) {
+            throw std::runtime_error(
+                "PcapReceiver: failed to forward packet from '" + device_->getName() + "' to '" +
+                route_device_->getName() + "'"
+            );
+        }
     }
 
     if (!record_packets_)

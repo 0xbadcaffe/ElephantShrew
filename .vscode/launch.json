@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/misteroy/Projects/github/ElephantShrew",
-      "program": "/home/misteroy/Projects/github/ElephantShrew/build/Debug/outDebug",
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/builddir/elephantshrew",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

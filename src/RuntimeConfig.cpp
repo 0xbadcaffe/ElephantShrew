@@ -79,6 +79,15 @@ RuntimeConfig LoadRuntimeConfigFromJson(const std::string& path)
         ReadValue(*redis, "redis", "drain_timeout_ms", config.redis.drain_timeout_ms);
     }
 
+    if (const auto* routing = FindObject(root, "routing")) {
+        ReadValue(*routing, "routing", "enabled", config.routing.enabled);
+        ReadValue(*routing, "routing", "ingress_iface", config.routing.ingress_iface);
+        ReadValue(*routing, "routing", "egress_iface", config.routing.egress_iface);
+        ReadValue(*routing, "routing", "from_interface", config.routing.ingress_iface);
+        ReadValue(*routing, "routing", "to_interface", config.routing.egress_iface);
+        ReadValue(*routing, "routing", "bidirectional", config.routing.bidirectional);
+    }
+
     if (const auto* supervisor = FindObject(root, "supervisor")) {
         ReadValue(*supervisor, "supervisor", "restart_delay_ms", config.supervisor.restart_delay_ms);
         ReadValue(*supervisor, "supervisor", "poll_interval_ms", config.supervisor.poll_interval_ms);
@@ -94,6 +103,19 @@ RuntimeConfig LoadRuntimeConfigFromJson(const std::string& path)
         throw std::runtime_error("Invalid 'redis.port': value must not be empty");
     if (config.redis.stream_key.empty())
         throw std::runtime_error("Invalid 'redis.stream_key': value must not be empty");
+    if (!config.routing.ingress_iface.empty() || !config.routing.egress_iface.empty())
+        config.routing.enabled = true;
+    if (config.routing.enabled) {
+        if (config.routing.ingress_iface.empty())
+            throw std::runtime_error("Invalid 'routing.ingress_iface': value must not be empty");
+        if (config.routing.egress_iface.empty())
+            throw std::runtime_error("Invalid 'routing.egress_iface': value must not be empty");
+        if (config.routing.ingress_iface == config.routing.egress_iface) {
+            throw std::runtime_error(
+                "Invalid routing configuration: ingress and egress interfaces must be different"
+            );
+        }
+    }
 
     RequirePositive("redis.max_pending_writes", config.redis.max_pending_writes);
     RequirePositive("redis.connect_timeout_ms", config.redis.connect_timeout_ms);

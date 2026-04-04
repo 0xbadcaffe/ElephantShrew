@@ -14,6 +14,13 @@ struct CaptureOptions {
     bool debug_packets{false};
 };
 
+struct RoutingOptions {
+    bool enabled{false};
+    std::string ingress_iface;
+    std::string egress_iface;
+    bool bidirectional{false};
+};
+
 struct RedisStoreOptions {
     std::string host{"127.0.0.1"};
     std::string port{"6379"};
@@ -34,6 +41,7 @@ struct UiOptions {
 
 struct RuntimeConfig {
     CaptureOptions capture;
+    RoutingOptions routing;
     RedisStoreOptions redis;
     SupervisorOptions supervisor;
     UiOptions ui;

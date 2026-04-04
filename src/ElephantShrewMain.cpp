@@ -6,6 +6,7 @@
 #include <pcapplusplus/PcapLiveDeviceList.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <vector>
@@ -19,14 +20,18 @@ struct CliOptions
 {
     std::optional<std::string> config_path;
     std::vector<std::string> ifaces;
+    std::optional<std::string> route_spec;
     bool record_packets{false};
     bool debug_packets{false};
+    bool bidirectional_route{false};
     bool scan_only{false};
 };
 
 void PrintUsage(const char* program)
 {
-    std::cout << "Usage: " << program << " [-s] [-r] [-d] [-c <config.json>] [-i <iface>]...\n";
+    std::cout
+        << "Usage: " << program << " [-s] [-r] [-d] [-c <config.json>] [-i <iface>]...\n"
+        << "       " << program << " [options] --route <ingress:egress> [--bidirectional]\n";
 }
 
 void PrintStartupArt()
@@ -81,6 +86,29 @@ bool StopRequested()
     return g_stopRequested.load();
 }
 
+bool ParseRouteSpec(const std::string& route_spec, std::string& ingress_iface, std::string& egress_iface)
+{
+    std::size_t separator_pos = route_spec.find("->");
+    std::size_t separator_size = 2;
+
+    if (separator_pos == std::string::npos) {
+        separator_pos = route_spec.find(':');
+        separator_size = 1;
+    }
+
+    if (separator_pos == std::string::npos) {
+        separator_pos = route_spec.find(',');
+        separator_size = 1;
+    }
+
+    if (separator_pos == std::string::npos)
+        return false;
+
+    ingress_iface = route_spec.substr(0, separator_pos);
+    egress_iface = route_spec.substr(separator_pos + separator_size);
+    return !ingress_iface.empty() && !egress_iface.empty();
+}
+
 bool ParseArguments(int argc, char* argv[], CliOptions& options)
 {
     for (int i = 1; i < argc; ++i) {
@@ -106,6 +134,21 @@ bool ParseArguments(int argc, char* argv[], CliOptions& options)
             continue;
         }
 
+        if (arg == "--route") {
+            if (i + 1 >= argc) {
+                spdlog::error("Missing value for '{}'", arg);
+                return false;
+            }
+
+            options.route_spec = argv[++i];
+            continue;
+        }
+
+        if (arg == "--bidirectional") {
+            options.bidirectional_route = true;
+            continue;
+        }
+
         if (arg == "-s") {
             options.scan_only = true;
             continue;
@@ -126,8 +169,19 @@ bool ParseArguments(int argc, char* argv[], CliOptions& options)
     }
 
     if (options.scan_only &&
-        (!options.ifaces.empty() || options.record_packets || options.debug_packets)) {
+        (!options.ifaces.empty() || options.route_spec || options.record_packets ||
+         options.debug_packets || options.bidirectional_route)) {
         spdlog::error("'-s' cannot be combined with capture flags");
+        return false;
+    }
+
+    if (options.route_spec && !options.ifaces.empty()) {
+        spdlog::error("'-i' cannot be combined with '--route'");
+        return false;
+    }
+
+    if (options.bidirectional_route && !options.route_spec) {
+        spdlog::error("'--bidirectional' requires '--route'");
         return false;
     }
 
@@ -149,6 +203,28 @@ ElephantShrew::RuntimeConfig LoadEffectiveConfig(const CliOptions& options)
 
     if (options.debug_packets)
         config.capture.debug_packets = true;
+
+    if (options.route_spec) {
+        std::string ingress_iface;
+        std::string egress_iface;
+        if (!ParseRouteSpec(*options.route_spec, ingress_iface, egress_iface)) {
+            throw std::runtime_error(
+                "Invalid '--route' value '" + *options.route_spec +
+                "'. Expected '<ingress>:<egress>', '<ingress>-><egress>', or '<ingress>,<egress>'"
+            );
+        }
+
+        config.routing.enabled = true;
+        config.routing.ingress_iface = ingress_iface;
+        config.routing.egress_iface = egress_iface;
+        config.capture.ifaces.clear();
+    }
+
+    if (options.bidirectional_route)
+        config.routing.bidirectional = true;
+
+    if (config.routing.enabled && !options.ifaces.empty())
+        throw std::runtime_error("'-i' cannot be combined with interface routing");
 
     return config;
 }
@@ -238,6 +314,13 @@ int main(int argc, char *argv[]) {
 
     if (options.config_path)
         spdlog::info("Loaded runtime config from '{}'", *options.config_path);
+
+    if (config.routing.enabled) {
+        spdlog::info("Interface routing configured: {} {} {}",
+                     config.routing.ingress_iface,
+                     config.routing.bidirectional ? "<->" : "->",
+                     config.routing.egress_iface);
+    }
 
     spdlog::info("Hello world ElephantShrew");
 

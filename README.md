@@ -18,7 +18,8 @@
 
 ElephantShrew captures live packets from one or more network interfaces. Packet
 recording to the Redis-compatible stream `elephantshrew:packets` is enabled
-with `-r`.
+with `-r`. It can also bridge raw packets from one interface to another, with
+optional bidirectional forwarding.
 
 ## Requirements
 
@@ -35,10 +36,9 @@ with `-r`.
 
 ## Build
 
-Run the build from the project directory that contains `meson.build`:
+Run the build from the project root:
 
 ```bash
-cd ElephantShrew
 meson setup builddir
 meson compile -C builddir
 ```
@@ -71,6 +71,24 @@ Capture from multiple interfaces by repeating `-i`:
 
 ```bash
 sudo ./builddir/elephantshrew -r -i eth0 -i wlan0
+```
+
+Route packets from `eth0` to `eth1`:
+
+```bash
+sudo ./builddir/elephantshrew --route eth0:eth1
+```
+
+Bridge packets in both directions between `eth0` and `eth1`:
+
+```bash
+sudo ./builddir/elephantshrew --route eth0:eth1 --bidirectional
+```
+
+Route packets and record/debug them at the same time:
+
+```bash
+sudo ./builddir/elephantshrew -r -d --route eth0:eth1 --bidirectional
 ```
 
 Run with automatic interface selection:
@@ -114,7 +132,14 @@ List available interfaces without starting capture:
   on startup.
 - `-d` enables packet-level debug logs that include the interface name,
   addresses, protocol, and packet length.
-- CLI flags override the JSON config for `-i`, `-r`, and `-d`.
+- `--route` enables interface-to-interface forwarding using a route pair such as
+  `eth0:eth1`.
+- `--bidirectional` forwards traffic in both directions for the route pair.
+- Routing forwards raw Ethernet frames, so ARP, ICMP, UDP, and TCP traffic all
+  traverse the bridge transparently. TCP stream reassembly remains the
+  responsibility of the connected endpoints.
+- CLI flags override the JSON config for `-i`, `-r`, `-d`, `--route`, and
+  `--bidirectional`.
 
 ## Config File
 
@@ -126,6 +151,12 @@ List available interfaces without starting capture:
     "interfaces": [],
     "record_packets": false,
     "debug_packets": false
+  },
+  "routing": {
+    "enabled": false,
+    "ingress_iface": "eth0",
+    "egress_iface": "eth1",
+    "bidirectional": false
   },
   "redis": {
     "host": "127.0.0.1",
