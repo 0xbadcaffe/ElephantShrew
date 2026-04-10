@@ -2,10 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug GCC (-s)",
+      "name": "ElephantShrew Debug Scan (F5)",
       "type": "cppdbg",
       "request": "launch",
       "preLaunchTask": "Build debug-gcc",
+      "linux": {
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+      },
       "args": [
         "-s"
       ],
@@ -13,8 +17,6 @@
       "externalConsole": false,
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/build/debug-gcc/elephantshrew",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
       "environment": [
         {
           "name": "LD_LIBRARY_PATH",
@@ -40,10 +42,138 @@
       ]
     },
     {
-      "name": "Debug Clang (-s)",
+      "name": "ElephantShrew Debug Capture eth0",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "Build debug-gcc",
+      "linux": {
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+      },
+      "args": [
+        "-i",
+        "eth0"
+      ],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/debug-gcc/elephantshrew",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/usr/local/lib:${env:LD_LIBRARY_PATH}"
+        }
+      ],
+      "additionalSOLibSearchPath": "/usr/local/lib:/usr/lib:/usr/lib/x86_64-linux-gnu",
+      "symbolLoadInfo": {
+        "loadAll": true,
+        "exceptionList": ""
+      },
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Load shared library symbols automatically",
+          "text": "set auto-solib-add on",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "ElephantShrew Debug Route eth0->eth1",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "Build debug-gcc",
+      "linux": {
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+      },
+      "args": [
+        "--route",
+        "eth0:eth1"
+      ],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/debug-gcc/elephantshrew",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/usr/local/lib:${env:LD_LIBRARY_PATH}"
+        }
+      ],
+      "additionalSOLibSearchPath": "/usr/local/lib:/usr/lib:/usr/lib/x86_64-linux-gnu",
+      "symbolLoadInfo": {
+        "loadAll": true,
+        "exceptionList": ""
+      },
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Load shared library symbols automatically",
+          "text": "set auto-solib-add on",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "ElephantShrew Debug Route eth0<->eth1",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "Build debug-gcc",
+      "linux": {
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+      },
+      "args": [
+        "--route",
+        "eth0:eth1",
+        "--bidirectional"
+      ],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/debug-gcc/elephantshrew",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/usr/local/lib:${env:LD_LIBRARY_PATH}"
+        }
+      ],
+      "additionalSOLibSearchPath": "/usr/local/lib:/usr/lib:/usr/lib/x86_64-linux-gnu",
+      "symbolLoadInfo": {
+        "loadAll": true,
+        "exceptionList": ""
+      },
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Load shared library symbols automatically",
+          "text": "set auto-solib-add on",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "ElephantShrew Debug Clang (-s)",
       "type": "cppdbg",
       "request": "launch",
       "preLaunchTask": "Build debug-clang",
+      "linux": {
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"
+      },
       "args": [
         "-s"
       ],
@@ -51,8 +181,6 @@
       "externalConsole": false,
       "cwd": "${workspaceFolder}",
       "program": "${workspaceFolder}/build/debug-clang/elephantshrew",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
       "environment": [
         {
           "name": "LD_LIBRARY_PATH",
