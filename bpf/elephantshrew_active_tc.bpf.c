@@ -11,12 +11,14 @@ struct es_rules_map {
     __type(value, struct es_rule);
 };
 struct es_rules_map rule_template SEC(".maps");
+
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
     __uint(max_entries, 1);
     __type(key, __u32);
     __array(values, struct es_rules_map);
 } active_rules SEC(".maps") = { .values = { [0] = &rule_template } };
+
 struct {
     __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
     __uint(max_entries, 1);

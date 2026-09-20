@@ -122,4 +122,4 @@ ES_ASSERT(sizeof(struct es_flow_key) == 56, "flow key ABI changed");
 ES_ASSERT(sizeof(struct es_flow_value) == 32, "flow value ABI changed");
 ES_ASSERT(sizeof(struct es_counters) == ES_C_MAX * 8, "counter ABI changed");
 #undef ES_ASSERT
-#endif
+#endif /* ELEPHANTSHREW_SHARED_H */

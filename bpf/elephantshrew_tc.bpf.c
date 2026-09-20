@@ -17,10 +17,12 @@ struct {
     __type(key, __u32);
     __type(value, struct es_counters);
 } counters SEC(".maps");
+
 struct {
     __uint(type, BPF_MAP_TYPE_RINGBUF);
     __uint(max_entries, 8 * 1024 * 1024);
 } events SEC(".maps");
+
 struct {
     __uint(type, BPF_MAP_TYPE_LRU_PERCPU_HASH);
     __uint(max_entries, 4096);
