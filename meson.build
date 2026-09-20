@@ -157,13 +157,6 @@ if get_option('ebpf')
 endif
 configure_file(output: 'es_build_config.h', configuration: build_cfg)
 
-#exe = executable(
-#  'elephantshrew',
-#  sources,
-#  include_directories : inc_dirs,
-#  dependencies: [openssl, spdlog_dep, pcapplusplus_dep, boost_dep],
-#  install : true)
-
 exe = executable(
     'elephantshrew',
     sources + ebpf_generated,
@@ -207,3 +200,8 @@ run_target(
 )
 
 test('basic', exe)
+
+test('help', exe, args: ['--help'], timeout: 5)
+if get_option('ebpf_tests')
+  subdir('tests/ebpf')
+endif
