@@ -4,3 +4,13 @@ option(
   value : false,
   description : 'Enable host-specific optimization flags such as -march=native for release builds',
 )
+
+option('ebpf', type: 'boolean', value: false)
+option('ebpf_tcx', type: 'boolean', value: false)
+option('ebpf_active', type: 'boolean', value: false)
+option('ebpf_xdp', type: 'boolean', value: false)
+option('af_xdp', type: 'boolean', value: false)
+option('bpf_btf', type: 'string', value: '')
+option('bpf_clang', type: 'string', value: 'clang')
+option('bpf_tool', type: 'string', value: 'bpftool')
+option('ebpf_tests', type: 'boolean', value: false)
